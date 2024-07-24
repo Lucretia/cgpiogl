@@ -67,4 +67,11 @@ package GL is
      Convention => C;
 
    Shader_Source : Shader_Source_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLCOMPILESHADERPROC) (GLuint shader);
+   --  GLAPI void APIENTRY glCompileShader (GLuint shader);
+   type Compile_Shader_Ptr is access procedure (Shader : UInt) with
+     Convention => C;
+
+   Compile_Shader : Compile_Shader_Ptr := null;
 end GL;
