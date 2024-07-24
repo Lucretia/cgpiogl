@@ -12,9 +12,23 @@ package body GL.SDL is
      (Subprogram_Name       => "glClear",
       Access_To_Sub_Program => Clear_Ptr);
 
+   function Init_Create_Shader is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glCreateShader",
+      Access_To_Sub_Program => Create_Shader_Ptr);
+
+   function Init_Shader_Source is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glShaderSource",
+      Access_To_Sub_Program => Shader_Source_Ptr);
+
+   --  function Init_ is new Video.GL.Get_Subprogram
+   --    (Subprogram_Name       => "",
+   --     Access_To_Sub_Program => );
+
    procedure Initialise is
    begin
-      Clear_Colour := Init_Clear_Colour;
-      Clear        := Init_Clear;
+      Clear_Colour  := Init_Clear_Colour;
+      Clear         := Init_Clear;
+      Create_Shader := Init_Create_Shader;
+      Shader_Source := Init_Shader_Source;
    end Initialise;
 end GL.SDL;
