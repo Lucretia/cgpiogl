@@ -74,4 +74,11 @@ package GL is
      Convention => C;
 
    Compile_Shader : Compile_Shader_Ptr := null;
+
+   --  typedef GLuint (APIENTRYP PFNGLCREATEPROGRAMPROC) (void);
+   --  GLAPI GLuint APIENTRY glCreateProgram (void);
+   type Create_Program_Ptr is access procedure with
+     Convention => C;
+
+   Create_Program : Create_Program_Ptr := null;
 end GL;

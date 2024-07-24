@@ -24,6 +24,10 @@ package body GL.SDL is
      (Subprogram_Name       => "glCompileShader",
       Access_To_Sub_Program => Compile_Shader_Ptr);
 
+   function Init_Create_Program is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glCreateProgram",
+      Access_To_Sub_Program => Create_Program_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -35,5 +39,6 @@ package body GL.SDL is
       Create_Shader  := Init_Create_Shader;
       Shader_Source  := Init_Shader_Source;
       Compile_Shader := Init_Compile_Shader;
+      Create_Program := Init_Create_Program;
    end Initialise;
 end GL.SDL;
