@@ -1,0 +1,16 @@
+name = "opengl"
+description = "OpenGL bindings"
+version = "0.1.0-dev"
+
+authors = ["Luke A. Guest"]
+maintainers = ["Luke A. Guest <laguest@archeia.com>"]
+maintainers-logins = ["Lucretia"]
+licenses = "BSD-3-Clause"
+website = ""
+tags = ["opengl", "gl4"]
+
+[[depends-on]]
+sdlada = "^2.5.73"
+
+[[pins]]
+sdlada = { path='../../../game-dev/sdl/sdlada' }
