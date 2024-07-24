@@ -53,6 +53,7 @@ begin
       Initialise (Prog_Window);
 
       Main : loop
+         --  This is basically the "glfwWindowShouldClose" call.
          while Events.Poll (Event) loop
             case Event.Common.Event_Type is
                when SDL.Events.Quit =>
