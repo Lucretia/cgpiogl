@@ -30,7 +30,6 @@ procedure First is
 
    procedure Display (Window : Windows.Window; Current_Time_MS : Timers.Milliseconds_Long) is
    begin
-      --  GL.Clear_Colour (Red, Alpha => 1.0, others => 0.0);
       GL.Clear_Colour (Red => 1.0, Green => 0.0, Blue => 0.0, Alpha => 1.0);
       GL.Clear (GL.Color_Buffer_Bit);
    end Display;
