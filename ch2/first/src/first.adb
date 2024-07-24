@@ -48,6 +48,7 @@ begin
          Size     => Window_Size);
 
       Video.GL.Create (Context, From => Prog_Window);
+      Video.GL.Set_Current (Context, Prog_Window);
       Video.GL.Set_Swap_Interval (Video.GL.Synchronised);
 
       Initialise (Prog_Window);
