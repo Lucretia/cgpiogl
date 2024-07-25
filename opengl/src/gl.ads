@@ -110,4 +110,11 @@ package GL is
      Convention => C;
 
    Attach_Shader : Attach_Shader_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLLINKPROGRAMPROC) (GLuint program);
+   --  GLAPI void APIENTRY glLinkProgram (GLuint program);
+   type Link_Program_Ptr is access procedure (Program : UInt) with
+     Convention => C;
+
+   Link_Program : Link_Program_Ptr := null;
 end GL;

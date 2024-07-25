@@ -32,6 +32,10 @@ package body GL.SDL is
      (Subprogram_Name       => "glAttachShader",
       Access_To_Sub_Program => Attach_Shader_Ptr);
 
+   function Init_Link_Program is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glLinkProgram",
+      Access_To_Sub_Program => Link_Program_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -45,5 +49,6 @@ package body GL.SDL is
       Compile_Shader := Init_Compile_Shader;
       Create_Program := Init_Create_Program;
       Attach_Shader  := Init_Attach_Shader;
+      Link_Program   := Init_Link_Program;
    end Initialise;
 end GL.SDL;
