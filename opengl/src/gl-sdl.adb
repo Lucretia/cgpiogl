@@ -60,6 +60,14 @@ package body GL.SDL is
      (Subprogram_Name       => "glGetError",
       Access_To_Sub_Program => Get_Error_Ptr);
 
+   function Init_Enable is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glEnable",
+      Access_To_Sub_Program => Enable_Ptr);
+
+   function Init_Disable is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glDisable",
+      Access_To_Sub_Program => Disable_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -80,5 +88,7 @@ package body GL.SDL is
       Draw_Arrays       := Init_Draw_Arrays;
       Point_Size        := Init_Point_Size;
       Get_Error         := Init_Get_Error;
+      Enable            := Init_Enable;
+      Disable           := Init_Disable;
    end Initialise;
 end GL.SDL;
