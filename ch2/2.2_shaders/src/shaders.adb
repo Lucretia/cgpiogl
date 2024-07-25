@@ -48,8 +48,16 @@ procedure Shaders is
       Fragment_Shader_Program : GL.Shader_Programs := GL.Convert (Fragment_Shader_Source);
       Program_Result          : GL.UInt;
    begin
-      GL.Shader_Source (Vertex_Shader, 1, Vertex_Shader_Program.Program, Vertex_Shader_Program.String_Lengths);
-      GL.Shader_Source (Fragment_Shader, 1, Fragment_Shader_Program.Program, Fragment_Shader_Program.String_Lengths);
+      GL.Shader_Source
+        (Vertex_Shader,
+         Vertex_Shader_Program.Program'Length,
+         Vertex_Shader_Program.Program,
+         Vertex_Shader_Program.String_Lengths);
+      GL.Shader_Source
+        (Fragment_Shader,
+         Fragment_Shader_Program.Program'Length,
+         Fragment_Shader_Program.Program,
+         Fragment_Shader_Program.String_Lengths);
       GL.Compile_Shader (Vertex_Shader);
       GL.Compile_Shader (Fragment_Shader);
 
