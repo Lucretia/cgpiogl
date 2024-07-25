@@ -36,19 +36,29 @@ package body GL.SDL is
      (Subprogram_Name       => "glLinkProgram",
       Access_To_Sub_Program => Link_Program_Ptr);
 
+   function Init_Gen_Vertex_Arrays is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGenVertexArrays",
+      Access_To_Sub_Program => Gen_Vertex_Arrays_Ptr);
+
+   function Init_Bind_Vertex_Array is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glBindVertexArray",
+      Access_To_Sub_Program => Bind_Vertex_Array_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
 
    procedure Initialise is
    begin
-      Clear_Colour   := Init_Clear_Colour;
-      Clear          := Init_Clear;
-      Create_Shader  := Init_Create_Shader;
-      Shader_Source  := Init_Shader_Source;
-      Compile_Shader := Init_Compile_Shader;
-      Create_Program := Init_Create_Program;
-      Attach_Shader  := Init_Attach_Shader;
-      Link_Program   := Init_Link_Program;
+      Clear_Colour      := Init_Clear_Colour;
+      Clear             := Init_Clear;
+      Create_Shader     := Init_Create_Shader;
+      Shader_Source     := Init_Shader_Source;
+      Compile_Shader    := Init_Compile_Shader;
+      Create_Program    := Init_Create_Program;
+      Attach_Shader     := Init_Attach_Shader;
+      Link_Program      := Init_Link_Program;
+      Gen_Vertex_Arrays := Init_Gen_Vertex_Arrays;
+      Bind_Vertex_Array := Init_Bind_Vertex_Array;
    end Initialise;
 end GL.SDL;

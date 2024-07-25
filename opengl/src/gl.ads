@@ -13,6 +13,8 @@ package GL is
 
    type Int_Array is array (C.size_t range <>) of Int with
      Convention => C;
+   type UInt_Array is array (C.size_t range <>) of UInt with
+     Convention => C;
 
    --  typedef void (APIENTRYP PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
    --  GLAPI void APIENTRY glClearColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -99,7 +101,7 @@ package GL is
 
    --  typedef GLuint (APIENTRYP PFNGLCREATEPROGRAMPROC) (void);
    --  GLAPI GLuint APIENTRY glCreateProgram (void);
-   type Create_Program_Ptr is access procedure with
+   type Create_Program_Ptr is access function return UInt with
      Convention => C;
 
    Create_Program : Create_Program_Ptr := null;
@@ -117,4 +119,18 @@ package GL is
      Convention => C;
 
    Link_Program : Link_Program_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLGENVERTEXARRAYSPROC) (GLsizei n, GLuint *arrays);
+   --  GLAPI void APIENTRY glGenVertexArrays (GLsizei n, GLuint *arrays);
+   type Gen_Vertex_Arrays_Ptr is access procedure (N : GL.SizeI; Arrays : in out UInt_Array) with
+     Convention => C;
+
+   Gen_Vertex_Arrays : Gen_Vertex_Arrays_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
+   --  GLAPI void APIENTRY glBindVertexArray (GLuint array);
+   type Bind_Vertex_Array_Ptr is access procedure (Arr : UInt) with
+     Convention => C;
+
+   Bind_Vertex_Array : Bind_Vertex_Array_Ptr := null;
 end GL;
