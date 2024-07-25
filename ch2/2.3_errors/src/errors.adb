@@ -78,7 +78,7 @@ procedure Errors is
       while GL_Error /= GL.No_Error loop
          IO.Put_Line ("GL Error: " & GL_Error'Image);
 
-         Found_Error := true;
+         Found_Error := True;
 
          GL_Error := GL.Get_Error.all;
       end loop;
@@ -116,13 +116,56 @@ procedure Errors is
          Fragment_Shader_Program.Program,
          Fragment_Shader_Program.String_Lengths);
       GL.Compile_Shader (Vertex_Shader);
+
+      if Check_OpenGL_Error then
+         declare
+            Compiled : GL.Int;
+         begin
+            GL.Get_Shader (Vertex_Shader, GL.Compile_Status, Compiled);
+
+            if not Boolean'Val (Compiled) then
+               IO.Put_Line ("Vertex compilation failed.");
+
+               Put_Shader_Log (Vertex_Shader);
+            end if;
+         end;
+      end if;
+
       GL.Compile_Shader (Fragment_Shader);
+
+      if Check_OpenGL_Error then
+         declare
+            Compiled : GL.Int;
+         begin
+            GL.Get_Shader (Fragment_Shader, GL.Compile_Status, Compiled);
+
+            if not Boolean'Val (Compiled) then
+               IO.Put_Line ("Fragment compilation failed.");
+
+               Put_Shader_Log (Fragment_Shader);
+            end if;
+         end;
+      end if;
 
       Program_Result := GL.Create_Program.all;
 
       GL.Attach_Shader (Program_Result, Vertex_Shader);
       GL.Attach_Shader (Program_Result, Fragment_Shader);
       GL.Link_Program (Program_Result);
+
+      if Check_OpenGL_Error then
+         declare
+            Linked : GL.Int;
+         begin
+            GL.Get_Program (Fragment_Shader, GL.Link_Status, Linked);
+
+            if not Boolean'Val (Linked) then
+               IO.Put_Line ("Linking failed.");
+
+               Put_Program_Log (Program_Result);
+            end if;
+         end;
+      end if;
 
       return Program_Result;
    end Create_Shader_Program;
