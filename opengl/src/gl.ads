@@ -486,4 +486,20 @@ package GL is
      Convention => C;
 
    Get_Program : Get_Program_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLGETSHADERINFOLOGPROC) (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+   --  GLAPI void APIENTRY glGetShaderInfoLog (GLuint shader, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+   type Get_Shader_Info_Log_Ptr is access procedure
+     (Shader : UInt; Buffer_Size : SizeI; Length : out SizeI; Info_Log : out C.char_array) with
+       Convention => C;
+
+   Get_Shader_Info_Log : Get_Shader_Info_Log_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLGETPROGRAMINFOLOGPROC) (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+   --  GLAPI void APIENTRY glGetProgramInfoLog (GLuint program, GLsizei bufSize, GLsizei *length, GLchar *infoLog);
+   type Get_Program_Info_Log_Ptr is access procedure
+     (Program : UInt; Buffer_Size : SizeI; Length : out SizeI; Info_Log : out C.char_array) with
+       Convention => C;
+
+   Get_Program_Info_Log : Get_Program_Info_Log_Ptr := null;
 end GL;

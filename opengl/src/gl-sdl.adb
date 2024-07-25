@@ -80,30 +80,40 @@ package body GL.SDL is
      (Subprogram_Name       => "glGetProgramiv",
       Access_To_Sub_Program => Get_Program_Ptr);
 
+   function Init_Get_Shader_Info_Log is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGetShaderInfoLog",
+      Access_To_Sub_Program => Get_Shader_Info_Log_Ptr);
+
+   function Init_Get_Program_Info_Log is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGetProgramInfoLog",
+      Access_To_Sub_Program => Get_Program_Info_Log_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
 
    procedure Initialise is
    begin
-      Clear_Colour      := Init_Clear_Colour;
-      Clear             := Init_Clear;
-      Create_Shader     := Init_Create_Shader;
-      Shader_Source     := Init_Shader_Source;
-      Compile_Shader    := Init_Compile_Shader;
-      Create_Program    := Init_Create_Program;
-      Attach_Shader     := Init_Attach_Shader;
-      Link_Program      := Init_Link_Program;
-      Gen_Vertex_Arrays := Init_Gen_Vertex_Arrays;
-      Bind_Vertex_Array := Init_Bind_Vertex_Array;
-      Use_Program       := Init_Use_Program;
-      Draw_Arrays       := Init_Draw_Arrays;
-      Point_Size        := Init_Point_Size;
-      Get_Error         := Init_Get_Error;
-      Enable            := Init_Enable;
-      Disable           := Init_Disable;
-      Polygon_Mode      := Init_Polygon_Mode;
-      Get_Shader        := Init_Get_Shader;
-      Get_Program       := Init_Get_Program;
+      Clear_Colour         := Init_Clear_Colour;
+      Clear                := Init_Clear;
+      Create_Shader        := Init_Create_Shader;
+      Shader_Source        := Init_Shader_Source;
+      Compile_Shader       := Init_Compile_Shader;
+      Create_Program       := Init_Create_Program;
+      Attach_Shader        := Init_Attach_Shader;
+      Link_Program         := Init_Link_Program;
+      Gen_Vertex_Arrays    := Init_Gen_Vertex_Arrays;
+      Bind_Vertex_Array    := Init_Bind_Vertex_Array;
+      Use_Program          := Init_Use_Program;
+      Draw_Arrays          := Init_Draw_Arrays;
+      Point_Size           := Init_Point_Size;
+      Get_Error            := Init_Get_Error;
+      Enable               := Init_Enable;
+      Disable              := Init_Disable;
+      Polygon_Mode         := Init_Polygon_Mode;
+      Get_Shader           := Init_Get_Shader;
+      Get_Program          := Init_Get_Program;
+      Get_Shader_Info_Log  := Init_Get_Shader_Info_Log;
+      Get_Program_Info_Log := Init_Get_Program_Info_Log;
    end Initialise;
 end GL.SDL;
