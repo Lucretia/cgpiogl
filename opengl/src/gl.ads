@@ -1,4 +1,4 @@
-with Interfaces.C;
+with Interfaces.C.Strings;
 
 package GL is
    package C renames Interfaces.C;
@@ -7,6 +7,9 @@ package GL is
    type UInt    is new C.unsigned;  --  GLuint
    type SizeI   is new C.int;       --  GLsizei
    type Int     is new C.int;       --  GLint
+
+   type Int_Array is array (Natural range <>) of Int with
+     Convention => C;
 
    --  typedef void (APIENTRYP PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
    --  GLAPI void APIENTRY glClearColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -63,7 +66,11 @@ package GL is
 
    --  typedef void (APIENTRYP PFNGLSHADERSOURCEPROC) (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
    --  GLAPI void APIENTRY glShaderSource (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
-   type Shader_Source_Ptr is access procedure (Shader : UInt; Count : SizeI; Program : C.char_array; Length : Int) with
+   type Shader_Source_Ptr is access procedure
+     (Shader  : UInt;
+      Count   : SizeI;
+      Program : C.Strings.chars_ptr_array;
+      Length  : Int_Array) with
      Convention => C;
 
    Shader_Source : Shader_Source_Ptr := null;
