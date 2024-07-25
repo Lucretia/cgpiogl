@@ -386,4 +386,104 @@ package GL is
      Convention => C;
 
    Polygon_Mode : Polygon_Mode_Ptr := null;
+
+   --  #define GL_SHADER_TYPE                    0x8B4F
+   --  #define GL_DELETE_STATUS                  0x8B80
+   --  #define GL_COMPILE_STATUS                 0x8B81
+   --  #define GL_INFO_LOG_LENGTH                0x8B84
+   --  #define GL_SHADER_SOURCE_LENGTH           0x8B88
+
+   type Shader_Parameter_Names is
+     (Shader_Type,
+      Delete_Status,
+      Compile_Status,
+      Info_Log_Length,
+      Shader_Source_Length) with
+     Convention => C;
+
+   for Shader_Parameter_Names use
+     (Shader_Type          => 16#8B4F#,
+      Delete_Status        => 16#8B80#,
+      Compile_Status       => 16#8B81#,
+      Info_Log_Length      => 16#8B84#,
+      Shader_Source_Length => 16#8B88#);
+
+   --  typedef void (APIENTRYP PFNGLGETSHADERIVPROC) (GLuint shader, GLenum pname, GLint *params);
+   --  GLAPI void APIENTRY glGetShaderiv (GLuint shader, GLenum pname, GLint *params);
+   type Get_Shader_Ptr is access procedure (Shader : UInt; Parameter : Shader_Parameter_Names; Params : out Int) with
+     Convention => C;
+
+   Get_Shader : Get_Shader_Ptr := null;
+
+   --  #define GL_COMPUTE_WORK_GROUP_SIZE        0x8267
+   --  #define GL_PROGRAM_BINARY_LENGTH          0x8741
+   --  #define GL_GEOMETRY_VERTICES_OUT          0x8916
+   --  #define GL_GEOMETRY_INPUT_TYPE            0x8917
+   --  #define GL_GEOMETRY_OUTPUT_TYPE           0x8918
+   --  #define GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH 0x8A35
+   --  #define GL_ACTIVE_UNIFORM_BLOCKS          0x8A36
+   --  #define GL_DELETE_STATUS                  0x8B80
+   --  #define GL_LINK_STATUS                    0x8B82
+   --  #define GL_VALIDATE_STATUS                0x8B83
+   --  #define GL_INFO_LOG_LENGTH                0x8B84
+   --  #define GL_ATTACHED_SHADERS               0x8B85
+   --  #define GL_ACTIVE_UNIFORMS                0x8B86
+   --  #define GL_ACTIVE_UNIFORM_MAX_LENGTH      0x8B87
+   --  #define GL_ACTIVE_ATTRIBUTES              0x8B89
+   --  #define GL_ACTIVE_ATTRIBUTE_MAX_LENGTH    0x8B8A
+   --  #define GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH 0x8C76
+   --  #define GL_TRANSFORM_FEEDBACK_BUFFER_MODE 0x8C7F
+   --  #define GL_TRANSFORM_FEEDBACK_VARYINGS    0x8C83
+   --  #define GL_ACTIVE_ATOMIC_COUNTER_BUFFERS  0x92D9
+   type Program_Properties is
+     (Compute_Work_Group_Size,
+      Program_Binary_Length,
+      Geometry_Vertices_Out,
+      Geometry_Input_Type,
+      Geometry_Output_Type,
+      Active_Uniform_Block_Max_Name_Length,
+      Active_Uniform_Blocks,
+      Delete_Status,
+      Link_Status,
+      Validate_Status,
+      Info_Log_Length,
+      Attached_Shaders,
+      Active_Uniforms,
+      Active_Uniform_Max_Length,
+      Active_Attributes,
+      Active_Attribute_Max_Length,
+      Transform_Feedback_Varying_Max_Length,
+      Transform_Feedback_Buffer_Mode,
+      Transform_Feedback_Varyings,
+      Active_Atomic_Counter_Buffers) with
+     Convention => C;
+
+   for Program_Properties use
+     (Compute_Work_Group_Size               => 16#8267#,
+      Program_Binary_Length                 => 16#8741#,
+      Geometry_Vertices_Out                 => 16#8916#,
+      Geometry_Input_Type                   => 16#8917#,
+      Geometry_Output_Type                  => 16#8918#,
+      Active_Uniform_Block_Max_Name_Length  => 16#8A35#,
+      Active_Uniform_Blocks                 => 16#8A36#,
+      Delete_Status                         => 16#8B80#,
+      Link_Status                           => 16#8B82#,
+      Validate_Status                       => 16#8B83#,
+      Info_Log_Length                       => 16#8B84#,
+      Attached_Shaders                      => 16#8B85#,
+      Active_Uniforms                       => 16#8B86#,
+      Active_Uniform_Max_Length             => 16#8B87#,
+      Active_Attributes                     => 16#8B89#,
+      Active_Attribute_Max_Length           => 16#8B8A#,
+      Transform_Feedback_Varying_Max_Length => 16#8C76#,
+      Transform_Feedback_Buffer_Mode        => 16#8C7F#,
+      Transform_Feedback_Varyings           => 16#8C83#,
+      Active_Atomic_Counter_Buffers         => 16#92D9#);
+
+   --  typedef void (APIENTRYP PFNGLGETPROGRAMIVPROC) (GLuint program, GLenum pname, GLint *params);
+   --  GLAPI void APIENTRY glGetProgramiv (GLuint program, GLenum pname, GLint *params);
+   type Get_Program_Ptr is access procedure (Program : UInt; Parameter : Program_Properties; Params : out Int) with
+     Convention => C;
+
+   Get_Program : Get_Program_Ptr := null;
 end GL;

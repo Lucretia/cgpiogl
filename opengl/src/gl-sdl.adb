@@ -72,6 +72,14 @@ package body GL.SDL is
      (Subprogram_Name       => "Polygon_Mode",
       Access_To_Sub_Program => Polygon_Mode_Ptr);
 
+   function Init_Get_Shader is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGetShaderiv",
+      Access_To_Sub_Program => Get_Shader_Ptr);
+
+   function Init_Get_Program is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGetProgramiv",
+      Access_To_Sub_Program => Get_Program_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -95,5 +103,7 @@ package body GL.SDL is
       Enable            := Init_Enable;
       Disable           := Init_Disable;
       Polygon_Mode      := Init_Polygon_Mode;
+      Get_Shader        := Init_Get_Shader;
+      Get_Program       := Init_Get_Program;
    end Initialise;
 end GL.SDL;
