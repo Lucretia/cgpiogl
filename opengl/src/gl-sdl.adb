@@ -44,6 +44,14 @@ package body GL.SDL is
      (Subprogram_Name       => "glBindVertexArray",
       Access_To_Sub_Program => Bind_Vertex_Array_Ptr);
 
+   function Init_Use_Program is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glUseProgram",
+      Access_To_Sub_Program => Use_Program_Ptr);
+
+   function Init_Draw_Arrays is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glDrawArrays",
+      Access_To_Sub_Program => Draw_Arrays_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -60,5 +68,7 @@ package body GL.SDL is
       Link_Program      := Init_Link_Program;
       Gen_Vertex_Arrays := Init_Gen_Vertex_Arrays;
       Bind_Vertex_Array := Init_Bind_Vertex_Array;
+      Use_Program       := Init_Use_Program;
+      Draw_Arrays       := Init_Draw_Arrays;
    end Initialise;
 end GL.SDL;

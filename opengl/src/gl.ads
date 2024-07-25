@@ -133,4 +133,58 @@ package GL is
      Convention => C;
 
    Bind_Vertex_Array : Bind_Vertex_Array_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLUSEPROGRAMPROC) (GLuint program);
+   --  GLAPI void APIENTRY glUseProgram (GLuint program);
+   type Use_Program_Ptr is access procedure (Program : UInt) with
+     Convention => C;
+
+   Use_Program : Use_Program_Ptr := null;
+
+   --  #define GL_POINTS                         0x0000
+   --  #define GL_LINES                          0x0001
+   --  #define GL_LINE_LOOP                      0x0002
+   --  #define GL_LINE_STRIP                     0x0003
+   --  #define GL_TRIANGLES                      0x0004
+   --  #define GL_TRIANGLE_STRIP                 0x0005
+   --  #define GL_TRIANGLE_FAN                   0x0006
+   --  #define GL_LINES_ADJACENCY                0x000A
+   --  #define GL_LINE_STRIP_ADJACENCY           0x000B
+   --  #define GL_TRIANGLES_ADJACENCY            0x000C
+   --  #define GL_TRIANGLE_STRIP_ADJACENCY       0x000D
+   --  #define GL_PATCHES                        0x000E
+   type Primitive_Modes is
+     (Points,
+      Lines,
+      Line_Loop,
+      Line_Strip,
+      Triangles,
+      Triangle_Strip,
+      Triangle_Fan,
+      Lines_Adjacency,
+      Line_Strip_Adjacency,
+      Triangles_Adjacency,
+      Triangle_Strip_Adjacency,
+      Patches);
+
+   for Primitive_Modes use
+     (Points                   => 16#0000#,
+      Lines                    => 16#0001#,
+      Line_Loop                => 16#0002#,
+      Line_Strip               => 16#0003#,
+      Triangles                => 16#0004#,
+      Triangle_Strip           => 16#0005#,
+      Triangle_Fan             => 16#0006#,
+      Lines_Adjacency          => 16#000A#,
+      Line_Strip_Adjacency     => 16#000B#,
+      Triangles_Adjacency      => 16#000C#,
+      Triangle_Strip_Adjacency => 16#000D#,
+      Patches                  => 16#000E#);
+
+   --  typedef void (APIENTRYP PFNGLDRAWARRAYSPROC) (GLenum mode, GLint first, GLsizei count);
+   --  GLAPI void APIENTRY glDrawArrays (GLenum mode, GLint first, GLsizei count);
+   TYPE Draw_Arrays_Ptr is access procedure (Mode : Primitive_Modes; First : Int; Count : SizeI) with
+     Convention => C;
+
+   Draw_Arrays : Draw_Arrays_Ptr := null;
 end GL;
