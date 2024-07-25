@@ -103,4 +103,11 @@ package GL is
      Convention => C;
 
    Create_Program : Create_Program_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLATTACHSHADERPROC) (GLuint program, GLuint shader);
+   --  GLAPI void APIENTRY glAttachShader (GLuint program, GLuint shader);
+   type Attach_Shader_Ptr is access procedure (Program, Shader : UInt) with
+     Convention => C;
+
+   Attach_Shader : Attach_Shader_Ptr := null;
 end GL;
