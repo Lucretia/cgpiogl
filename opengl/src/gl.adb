@@ -1,7 +1,3 @@
-with Ada.Finalization;
-with Ada.Strings.Unbounded;
-with Interfaces.C.Strings;
-
 package body GL is
    overriding
    procedure Finalize (Self : in out Shader_Programs) is
