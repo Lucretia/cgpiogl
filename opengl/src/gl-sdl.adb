@@ -68,6 +68,10 @@ package body GL.SDL is
      (Subprogram_Name       => "glDisable",
       Access_To_Sub_Program => Disable_Ptr);
 
+   function Init_Polygon_Mode is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "Polygon_Mode",
+      Access_To_Sub_Program => Polygon_Mode_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -90,5 +94,6 @@ package body GL.SDL is
       Get_Error         := Init_Get_Error;
       Enable            := Init_Enable;
       Disable           := Init_Disable;
+      Polygon_Mode      := Init_Polygon_Mode;
    end Initialise;
 end GL.SDL;

@@ -357,4 +357,33 @@ package GL is
      Convention => C;
 
    Disable : Disable_Ptr := null;
+
+   --  #define GL_FRONT                          0x0404
+   --  #define GL_BACK                           0x0405
+   --  #define GL_FRONT_AND_BACK                 0x0408
+
+   type Triangle_Faces is (Front, Back, Front_And_Back) with
+     Convention => C;
+
+   for Triangle_Faces use (Front          => 16#0404#,
+                           Back           => 16#0405#,
+                           Front_And_Back => 16#0408#);
+
+   --  #define GL_POINT                          0x1B00
+   --  #define GL_LINE                           0x1B01
+   --  #define GL_FILL                           0x1B02
+
+   type Polygon_Modes is (Point, Line, Fill) with
+     Convention => C;
+
+   for Polygon_Modes use (Point => 16#1B00#,
+                          Line  => 16#1B01#,
+                          Fill  => 16#1B02#);
+
+   --  typedef void (APIENTRYP PFNGLPOLYGONMODEPROC) (GLenum face, GLenum mode);
+   --  GLAPI void APIENTRY glPolygonMode (GLenum face, GLenum mode);
+   type Polygon_Mode_Ptr is access procedure (Face : Triangle_Faces; Mode : Polygon_Modes) with
+     Convention => C;
+
+   Polygon_Mode : Polygon_Mode_Ptr := null;
 end GL;
