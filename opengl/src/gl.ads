@@ -1,6 +1,9 @@
+with Ada.Finalization;
+with Ada.Strings.Unbounded;
 with Interfaces.C.Strings;
 
 package GL is
+   package US renames Ada.Strings.Unbounded;
    package C renames Interfaces.C;
 
    type Float32 is new C.C_float;   --  GLfloat
@@ -8,7 +11,7 @@ package GL is
    type SizeI   is new C.int;       --  GLsizei
    type Int     is new C.int;       --  GLint
 
-   type Int_Array is array (Natural range <>) of Int with
+   type Int_Array is array (C.size_t range <>) of Int with
      Convention => C;
 
    --  typedef void (APIENTRYP PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -63,6 +66,18 @@ package GL is
      Convention => C;
 
    Create_Shader : Create_Shader_Ptr := null;
+
+   type Shader_Program_Array is array (C.size_t range <>) of US.Unbounded_String;
+
+   type Shader_Programs (Length : C.size_t) is new Ada.Finalization.Controlled with record
+      Program        : C.Strings.chars_ptr_array (1 .. Length);
+      String_Lengths : Int_Array (1 .. Length);
+   end record;
+
+   overriding
+   procedure Finalize (Self : in out Shader_Programs);
+
+   function Convert (Shader_Program : Shader_Program_Array) return Shader_Programs;
 
    --  typedef void (APIENTRYP PFNGLSHADERSOURCEPROC) (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
    --  GLAPI void APIENTRY glShaderSource (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
