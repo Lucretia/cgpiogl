@@ -165,7 +165,8 @@ package GL is
       Line_Strip_Adjacency,
       Triangles_Adjacency,
       Triangle_Strip_Adjacency,
-      Patches);
+      Patches) with
+     Convention => C;
 
    for Primitive_Modes use
      (Points                   => 16#0000#,
@@ -183,8 +184,51 @@ package GL is
 
    --  typedef void (APIENTRYP PFNGLDRAWARRAYSPROC) (GLenum mode, GLint first, GLsizei count);
    --  GLAPI void APIENTRY glDrawArrays (GLenum mode, GLint first, GLsizei count);
-   TYPE Draw_Arrays_Ptr is access procedure (Mode : Primitive_Modes; First : Int; Count : SizeI) with
+   type Draw_Arrays_Ptr is access procedure (Mode : Primitive_Modes; First : Int; Count : SizeI) with
      Convention => C;
 
    Draw_Arrays : Draw_Arrays_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLPOINTSIZEPROC) (GLfloat size);
+   --  GLAPI void APIENTRY glPointSize (GLfloat size);
+   type Point_Size_Ptr is access procedure (Size : Float32) with
+     Convention => C;
+
+   Point_Size : Point_Size_Ptr := null;
+
+   --  #define GL_NO_ERROR                       0
+   --  #define GL_INVALID_ENUM                   0x0500
+   --  #define GL_INVALID_VALUE                  0x0501
+   --  #define GL_INVALID_OPERATION              0x0502
+   --  #define GL_STACK_OVERFLOW                 0x0503
+   --  #define GL_STACK_UNDERFLOW                0x0504
+   --  #define GL_OUT_OF_MEMORY                  0x0505
+   --  #define GL_INVALID_FRAMEBUFFER_OPERATION  0x0506
+   type Errors is
+     (No_Error,
+      Invalid_Enum,
+      Invalid_Value,
+      Invalid_Operation,
+      Stack_Overflow,
+      Stack_Underflow,
+      Out_Of_Memory,
+      Invalid_Framebuffer_Operation) with
+     Convention => C;
+
+   for Errors use
+     (No_Error                      => 0,
+      Invalid_Enum                  => 16#0500#,
+      Invalid_Value                 => 16#0501#,
+      Invalid_Operation             => 16#0502#,
+      Stack_Overflow                => 16#0503#,
+      Stack_Underflow               => 16#0504#,
+      Out_Of_Memory                 => 16#0505#,
+      Invalid_Framebuffer_Operation => 16#0506#);
+
+   --  typedef GLenum (APIENTRYP PFNGLGETERRORPROC) (void);
+   --  GLAPI GLenum APIENTRY glGetError (void);
+   type Get_Error_Ptr is access function return Errors with
+     Convention => C;
+
+   Get_Error : Get_Error_Ptr := null;
 end GL;
