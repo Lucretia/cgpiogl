@@ -14,6 +14,6 @@
 		}
 	],
 	"settings": {
-		"ada.projectFile": "./filesgpr"
+		"ada.projectFile": "./files.gpr"
 	}
 }
