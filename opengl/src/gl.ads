@@ -80,6 +80,7 @@ package GL is
    procedure Finalize (Self : in out Shader_Programs);
 
    function Convert (Shader_Program : Shader_Program_Array) return Shader_Programs;
+   function Convert (Shader_Program : String) return Shader_Programs;
 
    --  typedef void (APIENTRYP PFNGLSHADERSOURCEPROC) (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
    --  GLAPI void APIENTRY glShaderSource (GLuint shader, GLsizei count, const GLchar *const*string, const GLint *length);
