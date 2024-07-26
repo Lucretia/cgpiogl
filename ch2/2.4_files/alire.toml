@@ -1,0 +1,24 @@
+name = "files"
+description = ""
+version = "0.1.0-dev"
+
+authors = ["Luke A. Guest"]
+maintainers = ["Luke A. Guest <laguest@archeia.com>"]
+maintainers-logins = ["Lucretia"]
+licenses = "BSD-3-Clause"
+website = ""
+tags = []
+
+executables = ["files"]
+
+[[depends-on]]
+sdlada = "^2.5.73"
+
+[[pins]]
+sdlada = { path='../../../../game-dev/sdl/sdlada' }
+
+[[depends-on]]
+opengl = "~0.1.0-dev"
+
+[[pins]]
+opengl = { path='../../opengl' }
