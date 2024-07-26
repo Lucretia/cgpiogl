@@ -7,7 +7,7 @@ maintainers = ["Luke A. Guest <laguest@archeia.com>"]
 maintainers-logins = ["Lucretia"]
 licenses = "BSD-3-Clause"
 website = ""
-tags = ["opengl"]
+tags = ["opengl", "gl4"]
 
 executables = ["first"]
 
