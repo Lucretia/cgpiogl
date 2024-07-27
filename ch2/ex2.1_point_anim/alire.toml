@@ -1,5 +1,5 @@
 name = "point_anim"
-description = ""
+description = "Exercise 2.1: Animate the point from 2.2."
 version = "0.1.0-dev"
 
 authors = ["Luke A. Guest"]
