@@ -13,7 +13,7 @@ with SDL.Video.GL;
 with SDL.Video.Windows.Makers;
 with GL.SDL;
 
-procedure Errors is
+procedure Files is
    package L1 renames Ada.Characters.Latin_1;
    package US renames Ada.Strings.Unbounded;
    --  package RT renames Ada.Real_Time;
@@ -254,4 +254,4 @@ begin
       Windows.Finalize (Prog_Window);
       SDL.Quit;
    end if;
-end Errors;
+end Files
