@@ -88,7 +88,8 @@ package GL is
      (Shader  : UInt;
       Count   : SizeI;
       Program : C.Strings.chars_ptr_array;
-      Length  : Int_Array) with
+      Length  : Int_Array -- TODO: This can be set to null. On null, it will generate the lengths internally.
+     ) with
      Convention => C;
 
    Shader_Source : Shader_Source_Ptr := null;
@@ -503,4 +504,18 @@ package GL is
        Convention => C;
 
    Get_Program_Info_Log : Get_Program_Info_Log_Ptr := null;
+
+  --  typedef GLint (APIENTRYP PFNGLGETUNIFORMLOCATIONPROC) (GLuint program, const GLchar *name);
+  --  GLAPI GLint APIENTRY glGetUniformLocation (GLuint program, const GLchar *name);
+  type Get_Uniform_Location_Ptr is access function (Program : UInt; Name : C.char_array) return Int with
+    Convention => C;
+
+  Get_Uniform_Location : Get_Uniform_Location_Ptr := null;
+
+  --  typedef void (APIENTRYP PFNGLUNIFORM1FPROC) (GLint location, GLfloat v0);
+  --  GLAPI void APIENTRY glUniform1f (GLint location, GLfloat v0);
+  type Uniform_Ptr is access procedure (Location : Int; Value : Float32) with
+    Convention => C;
+
+  Uniform : Uniform_Ptr := null;
 end GL;

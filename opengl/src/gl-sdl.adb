@@ -88,6 +88,14 @@ package body GL.SDL is
      (Subprogram_Name       => "glGetProgramInfoLog",
       Access_To_Sub_Program => Get_Program_Info_Log_Ptr);
 
+   function Init_Get_Uniform_Location is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glGetUniformLocation",
+      Access_To_Sub_Program => Get_Uniform_Location_Ptr);
+
+   function Init_Uniform is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glUniform1f",
+      Access_To_Sub_Program => Uniform_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -115,5 +123,7 @@ package body GL.SDL is
       Get_Program          := Init_Get_Program;
       Get_Shader_Info_Log  := Init_Get_Shader_Info_Log;
       Get_Program_Info_Log := Init_Get_Program_Info_Log;
+      Get_Uniform_Location := Init_Get_Uniform_Location;
+      Uniform              := Init_Uniform;
    end Initialise;
 end GL.SDL;
