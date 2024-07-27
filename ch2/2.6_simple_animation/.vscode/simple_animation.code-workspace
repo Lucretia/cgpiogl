@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../opengl"
+		},
+		{
+			"path": "../../../../../game-dev/sdl/sdlada"
+		},
+		{
+			"path": "../../../../../game-dev/sdl/sdlada_image"
+		}
+	],
+	"settings": {
+		"ada.projectFile": "./simple_animation.gpr"
+	}
+}
