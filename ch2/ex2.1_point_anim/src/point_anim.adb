@@ -117,7 +117,7 @@ begin
 
       Windows.Makers.Create
         (Win      => Prog_Window,
-         Title    => Encoders.Encode ("Chapter 2: Program 2"),
+         Title    => Encoders.Encode ("Chapter 2: Exercise 2.1"),
          Position => Windows.Centered_Window_Position,
          Size     => Window_Size);
 
