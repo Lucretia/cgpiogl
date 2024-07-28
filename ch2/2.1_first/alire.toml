@@ -22,7 +22,7 @@ sdlada = "^2.5.73"
 opengl = "~0.1.0-dev"
 
 [[pins]]
-# sdlada = { url='https://github.com/ada-game-framework/sdlada.git' }
+sdlada = { url='https://github.com/ada-game-framework/sdlada.git' }
 opengl = { path='../../opengl' }
 
-sdlada = { path='../../../../game-dev/sdl/sdlada' }
+# sdlada = { path='../../../../game-dev/sdl/sdlada' }
