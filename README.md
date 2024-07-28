@@ -10,6 +10,8 @@ only just coming into use and some people may not have had them yet, the matrix
 multiplication algorithm is an an optimised one from one of the Graphics Gems
 books.
 
-I started to rewrite this library with the intention of utilising at least
-AVX, so I will be using that here.
+I started to rewrite this library in March 2024 with the intention of utilising
+at least AVX on Intel and NEON on ARM. The library is currently written unoptimised
+so that the compiler can do so. I will be using that libary here and completing it.
+
 
