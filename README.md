@@ -14,4 +14,10 @@ I started to rewrite this library in March 2024 with the intention of utilising
 at least AVX on Intel and NEON on ARM. The library is currently written unoptimised
 so that the compiler can do so. I will be using that libary here and completing it.
 
+## Copyright
 
+2024 (C) Luke A. Guest
+
+## Licence
+
+I have marked all the Alire projects in this directory as BSD.
