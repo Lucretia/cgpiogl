@@ -72,7 +72,7 @@ begin
          Display (Prog_Window, Timers.Ticks);
          Video.GL.Swap (Prog_Window);
 
-         exit when Finished;
+         exit Main when Finished;
       end loop Main;
 
       Windows.Finalize (Prog_Window);
