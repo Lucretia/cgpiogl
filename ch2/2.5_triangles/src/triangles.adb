@@ -254,4 +254,4 @@ begin
       Windows.Finalize (Prog_Window);
       SDL.Quit;
    end if;
-end Triangles
+end Triangles;
