@@ -7,9 +7,25 @@ project Triangles is
    for Exec_Dir use "bin";
    for Main use ("triangles.adb");
 
+   type CPU_Type is ("X86", "X86_64", "AARCH64");
+
+   CPU : CPU_Type := external ("CPU", "X86_64");
+
+   Compiler_Switches := ("-gnat2022", "-gnatyM120", "-gnatwaJ");
+
+   case CPU is
+      when "X86" | "X86_64" =>
+         Compiler_Switches := Compiler_Switches &("-mavx", "-msse4.1");
+
+      --  TODO:
+      when others =>
+         null;
+      -- when "AARCH64" =>
+      --    Compiler_Switches := "-n"
+   end case;
+
    package Compiler is
-      for Default_Switches ("Ada") use Triangles_Config.Ada_Compiler_Switches &
-        ("-gnat2022", "-gnatyM120", "-gnatwaJ");
+      for Default_Switches ("Ada") use Triangles_Config.Ada_Compiler_Switches & Compiler_Switches;
    end Compiler;
 
    package Binder is

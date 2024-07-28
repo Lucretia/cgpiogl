@@ -11,15 +11,18 @@ tags = ["opengl", "gl4"]
 
 executables = ["files"]
 
+[gpr-set-externals.'case(host-arch)']
+  I686    = { CPU = "X86" }
+  x86-64  = { CPU = "X86_64" }
+  aarch64 = { CPU = "AARCH64" }
+#   TODO: ARM?
+
 [[depends-on]]
 sdlada = "^2.5.73"
-sdlada_image = "~0.1.0-dev"
 opengl = "~0.1.0-dev"
 
 [[pins]]
 # sdlada = { url='https://github.com/ada-game-framework/sdlada.git' }
-# sdlada_image = { url='https://github.com/ada-game-framework/sdlada_image.git' }
 opengl = { path='../../opengl' }
 
 sdlada = { path='../../../../game-dev/sdl/sdlada' }
-sdlada_image = { path='../../../../game-dev/sdl/sdlada_image' }
