@@ -202,7 +202,7 @@ procedure Isosceles is
 
    procedure Display (Window : Windows.Window; Current_Time_MS : Timers.Milliseconds_Long) is
    begin
-      GL.Clear_Colour (Red => 1.0, Green => 0.0, Blue => 0.0, Alpha => 1.0);
+      GL.Clear_Colour (Red => 0.0, Green => 0.0, Blue => 0.0, Alpha => 1.0);
       GL.Clear (GL.Color_Buffer_Bit);
 
       GL.Use_Program (Rendering_Program);
