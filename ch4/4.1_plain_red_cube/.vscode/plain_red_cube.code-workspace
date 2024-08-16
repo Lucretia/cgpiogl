@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"name": "4.1_plain_red_cube",
+			"path": ".."
+		},
+		{
+			"name": "utils",
+			"path": "../../../utils"
+		},
+		{
+			"name": "opengl",
+			"path": "../../../opengl"
+		},
+		{
+			"name": "sdlada",
+			"path": "../../../../../game-dev/sdl/sdlada"
+		},
+		{
+			"name": "sdlada_image",
+			"path": "../../../../../game-dev/sdl/sdlada_image"
+		},
+		{
+			"path": "../../../../../game-dev/maths"
+		}
+	],
+	"settings": {
+		"ada.projectFile": "./plain_red_cube.gpr"
+	}
+}
