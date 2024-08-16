@@ -1,11 +1,13 @@
 with Ada.Finalization;
 with Ada.Strings.Unbounded;
 with Interfaces.C.Strings;
+with System;
 
 package GL is
    package US renames Ada.Strings.Unbounded;
    package C renames Interfaces.C;
 
+   type Bool    is new Interfaces.Unsigned_8; --  GLboolean
    type Float32 is new C.C_float;   --  GLfloat
    type UInt    is new C.unsigned;  --  GLuint
    type SizeI   is new C.int;       --  GLsizei
@@ -15,6 +17,12 @@ package GL is
      Convention => C;
    type UInt_Array is array (C.size_t range <>) of UInt with
      Convention => C;
+
+   type Float32_Array is array (C.size_t range <>) of Float32 with
+     Convention => C;
+
+   GL_True  : constant Bool := 0;
+   GL_False : constant Bool := 0;
 
    --  typedef void (APIENTRYP PFNGLCLEARCOLORPROC) (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
    --  GLAPI void APIENTRY glClearColor (GLfloat red, GLfloat green, GLfloat blue, GLfloat alpha);
@@ -135,6 +143,117 @@ package GL is
      Convention => C;
 
    Bind_Vertex_Array : Bind_Vertex_Array_Ptr := null;
+
+   --    <enum value="0x80EE" name="GL_PARAMETER_BUFFER" group="BufferTargetARB"/>
+   --    <enum value="0x8892" name="GL_ARRAY_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8893" name="GL_ELEMENT_ARRAY_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x88EB" name="GL_PIXEL_PACK_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x88EC" name="GL_PIXEL_UNPACK_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8A11" name="GL_UNIFORM_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8C2A" name="GL_TEXTURE_BUFFER" group="TextureTarget,CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8C8E" name="GL_TRANSFORM_FEEDBACK_BUFFER" group="ProgramInterface,BufferTargetARB,BufferStorageTarget,CopyBufferSubDataTarget"/>
+   --    <enum value="0x8F36" name="GL_COPY_READ_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8F37" name="GL_COPY_WRITE_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x8F3F" name="GL_DRAW_INDIRECT_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x90D2" name="GL_SHADER_STORAGE_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x90EE" name="GL_DISPATCH_INDIRECT_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x9192" name="GL_QUERY_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+   --    <enum value="0x92C0" name="GL_ATOMIC_COUNTER_BUFFER" group="CopyBufferSubDataTarget,BufferTargetARB,BufferStorageTarget"/>
+
+   --  BufferTargetARB.
+   type Buffer_Targets is
+     (Parameter_Buffer,
+      Array_Buffer,
+      Element_Array_Buffer,
+      Pixel_Pack_Buffer,
+      Pixel_Unpack_Buffer,
+      Uniform_Buffer,
+      Texture_Buffer,
+      Transform_Feedback_Buffer,
+      Copy_Read_Buffer,
+      Copy_Write_Buffer,
+      Draw_Indirect_Buffer,
+      Shader_Storage_Buffer,
+      Dispatch_Indirect_Buffer,
+      Query_Buffer,
+      Atomic_Counter_Buffer) with
+     Convention => C;
+
+   for Buffer_Targets use
+     (Parameter_Buffer          => 16#80EE#,
+      Array_Buffer              => 16#8892#,
+      Element_Array_Buffer      => 16#8893#,
+      Pixel_Pack_Buffer         => 16#88EB#,
+      Pixel_Unpack_Buffer       => 16#88EC#,
+      Uniform_Buffer            => 16#8A11#,
+      Texture_Buffer            => 16#8C2A#,
+      Transform_Feedback_Buffer => 16#8C8E#,
+      Copy_Read_Buffer          => 16#8F36#,
+      Copy_Write_Buffer         => 16#8F37#,
+      Draw_Indirect_Buffer      => 16#8F3F#,
+      Shader_Storage_Buffer     => 16#90D2#,
+      Dispatch_Indirect_Buffer  => 16#90EE#,
+      Query_Buffer              => 16#9192#,
+      Atomic_Counter_Buffer     => 16#92C0#);
+
+   --  typedef void (APIENTRYP PFNGLBINDBUFFERPROC) (GLenum target, GLuint buffer);
+   --  GLAPI void APIENTRY glBindBuffer (GLenum target, GLuint buffer);
+   type Bind_Buffer_Ptr is access procedure (Target : Buffer_Targets; Buffers : in UInt) with
+     Convention => C;
+
+   Bind_Buffer : Bind_Buffer_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLGENBUFFERSPROC) (GLsizei n, GLuint *buffers);
+   --  GLAPI void APIENTRY glGenBuffers (GLsizei n, GLuint *buffers);
+   type Gen_Buffers_Ptr is access procedure (N : GL.SizeI; Buffers : in out UInt_Array) with
+     Convention => C;
+
+   Gen_Buffers : Gen_Buffers_Ptr := null;
+
+   --    <enum value="0x88E0" name="GL_STREAM_DRAW" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E1" name="GL_STREAM_READ" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E2" name="GL_STREAM_COPY" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E4" name="GL_STATIC_DRAW" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E5" name="GL_STATIC_READ" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E6" name="GL_STATIC_COPY" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E8" name="GL_DYNAMIC_DRAW" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88E9" name="GL_DYNAMIC_READ" group="VertexBufferObjectUsage,BufferUsageARB"/>
+   --    <enum value="0x88EA" name="GL_DYNAMIC_COPY" group="VertexBufferObjectUsage,BufferUsageARB"/>
+
+   --  BufferUsageARB
+   type Buffer_Usages is
+     (Stream_Draw,
+      Stream_Read,
+      Stream_Copy,
+      Static_Draw,
+      Static_Read,
+      Static_Copy,
+      Dynamic_Draw,
+      Dynamic_Read,
+      Dynamic_Copy) with
+     Convention => C;
+
+   for Buffer_Usages use
+     (Stream_Draw  => 16#88E0#,
+      Stream_Read  => 16#88E1#,
+      Stream_Copy  => 16#88E2#,
+      Static_Draw  => 16#88E4#,
+      Static_Read  => 16#88E5#,
+      Static_Copy  => 16#88E6#,
+      Dynamic_Draw => 16#88E8#,
+      Dynamic_Read => 16#88E9#,
+      Dynamic_Copy => 16#88EA#);
+
+   --  typedef void (APIENTRYP PFNGLBUFFERDATAPROC) (GLenum target, GLsizeiptr size, const void *data, GLenum usage);
+   --  GLAPI void APIENTRY glBufferData (GLenum target, GLsizeiptr size, const void *data, GLenum usage);
+   type Buffer_Data_Ptr is access procedure
+     (Target : Buffer_Targets;
+      Size   : GL.SizeI;
+      Data   : in Float32_Array;  -- TODO: I bet this can be many types.
+      Usage  : in Buffer_Usages) with
+     Convention => C;
+
+   Buffer_Data : Buffer_Data_Ptr := null;
 
    --  typedef void (APIENTRYP PFNGLUSEPROGRAMPROC) (GLuint program);
    --  GLAPI void APIENTRY glUseProgram (GLuint program);
@@ -518,4 +637,130 @@ package GL is
     Convention => C;
 
   Uniform : Uniform_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLUNIFORMMATRIX4FVPROC) (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+   --  GLAPI void APIENTRY glUniformMatrix4fv (GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+   type Uniform_Matrix_Ptr is access procedure (Location : Int; Count : SizeI; Transpose : Bool ; Values : Float32_Array) with
+     Convention => C;
+
+   Uniform_Matrix : Uniform_Matrix_Ptr;
+
+   --  <enum value="0x1400" name="GL_BYTE" group="VertexAttribIType,WeightPointerTypeARB,TangentPointerTypeEXT,BinormalPointerTypeEXT,ColorPointerType,ListNameType,NormalPointerType,PixelType,VertexAttribType,VertexAttribPointerType"/>
+   --  <enum value="0x1401" name="GL_UNSIGNED_BYTE" group="VertexAttribIType,ScalarType,ReplacementCodeTypeSUN,ElementPointerTypeATI,MatrixIndexPointerTypeARB,WeightPointerTypeARB,ColorPointerType,DrawElementsType,ListNameType,PixelType,VertexAttribType,VertexAttribPointerType"/>
+   --  <enum value="0x1402" name="GL_SHORT" group="VertexAttribIType,SecondaryColorPointerTypeIBM,WeightPointerTypeARB,TangentPointerTypeEXT,BinormalPointerTypeEXT,ColorPointerType,IndexPointerType,ListNameType,NormalPointerType,PixelType,TexCoordPointerType,VertexPointerType,VertexAttribType,VertexAttribPointerType"/>
+   --  <enum value="0x1403" name="GL_UNSIGNED_SHORT" group="VertexAttribIType,ScalarType,ReplacementCodeTypeSUN,ElementPointerTypeATI,MatrixIndexPointerTypeARB,WeightPointerTypeARB,ColorPointerType,DrawElementsType,ListNameType,PixelFormat,PixelType,VertexAttribType,VertexAttribPointerType"/>
+   --  <enum value="0x1404" name="GL_INT" group="VertexAttribIType,SecondaryColorPointerTypeIBM,WeightPointerTypeARB,TangentPointerTypeEXT,BinormalPointerTypeEXT,ColorPointerType,IndexPointerType,ListNameType,NormalPointerType,PixelType,TexCoordPointerType,VertexPointerType,VertexAttribType,AttributeType,UniformType,VertexAttribPointerType"/>
+   --  <enum value="0x1405" name="GL_UNSIGNED_INT" group="VertexAttribIType,ScalarType,ReplacementCodeTypeSUN,ElementPointerTypeATI,MatrixIndexPointerTypeARB,WeightPointerTypeARB,ColorPointerType,DrawElementsType,ListNameType,PixelFormat,PixelType,VertexAttribType,AttributeType,UniformType,VertexAttribPointerType"/>
+   --  <enum value="0x1406" name="GL_FLOAT" group="MapTypeNV,SecondaryColorPointerTypeIBM,WeightPointerTypeARB,VertexWeightPointerTypeEXT,TangentPointerTypeEXT,BinormalPointerTypeEXT,ColorPointerType,FogCoordinatePointerType,FogPointerTypeEXT,FogPointerTypeIBM,IndexPointerType,ListNameType,NormalPointerType,PixelType,TexCoordPointerType,VertexPointerType,VertexAttribType,AttributeType,UniformType,VertexAttribPointerType"/>
+   --  <enum value="0x140A" name="GL_DOUBLE" group="VertexAttribLType,MapTypeNV,SecondaryColorPointerTypeIBM,WeightPointerTypeARB,TangentPointerTypeEXT,BinormalPointerTypeEXT,ColorPointerType,FogCoordinatePointerType,FogPointerTypeEXT,FogPointerTypeIBM,IndexPointerType,NormalPointerType,TexCoordPointerType,VertexPointerType,VertexAttribType,AttributeType,UniformType,VertexAttribPointerType"/>
+   --  <enum value="0x140B" name="GL_HALF_FLOAT" group="PixelType,VertexAttribPointerType,VertexAttribType"/>
+   --  <enum value="0x140C" name="GL_FIXED" group="VertexAttribPointerType,VertexAttribType"/>
+   --  <enum value="0x140E" name="GL_INT64_ARB" group="VertexAttribPointerType,AttributeType"/>
+   --  <enum value="0x140E" name="GL_INT64_NV" group="VertexAttribPointerType,AttributeType"/>
+   --  <enum value="0x140F" name="GL_UNSIGNED_INT64_ARB" group="VertexAttribPointerType,AttributeType"/>
+   --  <enum value="0x140F" name="GL_UNSIGNED_INT64_NV" group="VertexAttribPointerType,AttributeType"/>
+   --  <enum value="0x8368" name="GL_UNSIGNED_INT_2_10_10_10_REV" group="PixelType,VertexAttribPointerType,VertexAttribType"/>
+   --  <enum value="0x8368" name="GL_UNSIGNED_INT_2_10_10_10_REV_EXT" group="PixelType,VertexAttribPointerType,VertexAttribType"/>
+   --  <enum value="0x8C3B" name="GL_UNSIGNED_INT_10F_11F_11F_REV" group="PixelType,VertexAttribPointerType,VertexAttribType"/>
+   --  <enum value="0x8D9F" name="GL_INT_2_10_10_10_REV" group="VertexAttribPointerType,VertexAttribType"/>
+   type Vertex_Attrib_Pointer_Types is
+     (GL_Byte,
+      GL_Unsigned_Byte,
+      GL_Short,
+      GL_Unsigned_Short,
+      GL_Int,
+      GL_Unsigned_Int,
+      GL_Float,
+      GL_Double,
+      GL_Half_Float,
+      GL_Fixed,
+      GL_Int64_Arb,
+      --  GL_Int64_Nv,
+      GL_Unsigned_Int64_Arb,
+      --  GL_Unsigned_Int64_Nv,
+      GL_Unsigned_Int_2_10_10_10_Rev,
+      --  GL_Unsigned_Int_2_10_10_10_Rev_Ext,
+      GL_Unsigned_Int_10_F_11_F_11_F_Rev,
+      GL_Int_2_10_10_10_Rev) with
+     Convention => C;
+
+   for Vertex_Attrib_Pointer_Types use
+     (GL_Byte                            => 16#1400#,
+      GL_Unsigned_Byte                   => 16#1401#,
+      GL_Short                           => 16#1402#,
+      GL_Unsigned_Short                  => 16#1403#,
+      GL_Int                             => 16#1404#,
+      GL_Unsigned_Int                    => 16#1405#,
+      GL_Float                           => 16#1406#,
+
+      GL_Double                          => 16#140A#,
+      GL_Half_Float                      => 16#140B#,
+      GL_Fixed                           => 16#140C#,
+      GL_Int64_Arb                       => 16#140E#,
+      --  GL_Int64_Nv                        => 16#140E#,
+      GL_Unsigned_Int64_Arb              => 16#140F#,
+      --  GL_Unsigned_Int64_Nv               => 16#140F#,
+      GL_Unsigned_Int_2_10_10_10_Rev     => 16#8368#,
+      --  GL_Unsigned_Int_2_10_10_10_Rev_Ext => 16#8368#,
+      GL_Unsigned_Int_10_F_11_F_11_F_Rev => 16#8C3B#,
+      GL_Int_2_10_10_10_Rev              => 16#8D9F#);
+
+   GL_Int64_Nv renames GL_Int64_Arb;
+   GL_Unsigned_Int64_Nv renames GL_Unsigned_Int64_Arb;
+   GL_Unsigned_Int_2_10_10_10_Rev_Ext renames GL_Unsigned_Int_2_10_10_10_Rev;
+
+   --  typedef void (APIENTRYP PFNGLVERTEXATTRIBPOINTERPROC) (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
+   --  GLAPI void APIENTRY glVertexAttribPointer (GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, const void *pointer);
+   type Vertex_Attrib_Pointer_Ptr is access procedure
+     (Index      : UInt;
+      Size       : Int;
+      PType      : Vertex_Attrib_Pointer_Types;
+      Normalized : Bool;
+      Stride     : SizeI;
+      Pointer    : System.Address);  -- TODO: WTF?
+
+   Vertex_Attrib_Pointer : Vertex_Attrib_Pointer_Ptr := null;
+
+   --  typedef void (APIENTRYP PFNGLENABLEVERTEXATTRIBARRAYPROC) (GLuint index);
+   --  GLAPI void APIENTRY glEnableVertexAttribArray (GLuint index);
+   type Enable_Vertex_Attrib_Array_Ptr is access procedure (Index : UInt) with
+     Convention => C;
+
+   Enable_Vertex_Attrib_Array : Enable_Vertex_Attrib_Array_Ptr := null;
+
+   --  <enum value="0x0200" name="GL_NEVER" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0201" name="GL_LESS" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0202" name="GL_EQUAL" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0203" name="GL_LEQUAL" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0204" name="GL_GREATER" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0205" name="GL_NOTEQUAL" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0206" name="GL_GEQUAL" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   --  <enum value="0x0207" name="GL_ALWAYS" group="StencilFunction,IndexFunctionEXT,AlphaFunction,DepthFunction"/>
+   type Depth_Functions is
+     (Never,
+      Less,
+      Equal,
+      L_Equal,
+      Greater,
+      Not_Equal,
+      G_Equal,
+      Always) with
+     Convention => C;
+
+   for Depth_Functions use
+     (Never     => 16#0200#,
+      Less      => 16#0201#,
+      Equal     => 16#0202#,
+      L_Equal   => 16#0203#,
+      Greater   => 16#0204#,
+      Not_Equal => 16#0205#,
+      G_Equal   => 16#0206#,
+      Always    => 16#0207#);
+
+   --  typedef void (APIENTRYP PFNGLDEPTHFUNCPROC) (GLenum func);
+   --  GLAPI void APIENTRY glDepthFunc (GLenum func);
+   type Depth_Func_Ptr is access procedure (Func : Depth_Functions) with
+     Convention => C;
+
+   Depth_Func : Depth_Func_Ptr := null;
 end GL;
