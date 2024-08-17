@@ -127,18 +127,19 @@ procedure Plain_Red_Cube is
 
       --  Build perspective matrix.
       --  Windows.Get_Size (Prog_Window)
-      Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
+      --  Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
 
-      declare
-         WS : Video.Surfaces.Surface := Windows.Get_Surface (Prog_Window);
-         S  : SDL.Sizes := Surfaces.Size (WS);
-      begin
-         loop
-            null;
-         end loop;
-      end;
+      --  declare
+      --     WS : Video.Surfaces.Surface := Windows.Get_Surface (Prog_Window);
+      --     S  : SDL.Sizes := Surfaces.Size (WS);
+      --  begin
+      --     loop
+      --        null;
+      --     end loop;
+      --  end;
 
-      Aspect := Float (Width) / Float (Height);
+      --  Aspect := Float (Width) / Float (Height);
+      Aspect := Float (Window_Size.Width) / Float (Window_Size.Height);
 
       Perspective := Matrix4s.Perspective
         (Field_of_View => Maths.Utils.To_Radians (Angle_Degrees => 60.0),
