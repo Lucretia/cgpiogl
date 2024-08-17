@@ -1,4 +1,5 @@
 with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
+with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
 with Interfaces.C;
 --  with Ada.Real_Time;
@@ -19,6 +20,7 @@ with Utils;
 procedure Plain_Red_Cube is
    --  package RT renames Ada.Real_Time;
    package Encoders renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
+   package IO renames Ada.Text_IO;
    package C renames Interfaces.C;
    package Timers renames SDL.Timers;
    package Video renames SDL.Video;
@@ -52,23 +54,24 @@ procedure Plain_Red_Cube is
    VAOs              : GL.UInt_Array (1 .. Total_VAOs);
    VBOs              : GL.UInt_Array (1 .. Total_VBOs);
 
-   procedure Initialise (Window : Windows.Window) is
-      use type GL.Float32;
+   use type GL.Float32;
 
+   Vertices : GL.Float32_Array (1 .. 108) :=
+      (-1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0,
+        1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0, -1.0,
+        1.0, -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0,
+        1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  1.0,  1.0,  1.0,
+       -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,
+       -1.0, -1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0,  1.0,
+       -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  1.0,
+       -1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0, -1.0,
+        1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  1.0,
+       -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0,  1.0,
+        1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0);
+
+   procedure Initialise (Window : Windows.Window) is
       procedure Set_Up_Vertices is
-         Vertices : GL.Float32_Array (1 .. 108) :=
-           (-1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0,
-             1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0, -1.0,
-             1.0, -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,  1.0, -1.0,
-             1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  1.0,  1.0,  1.0,
-            -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0,  1.0,  1.0,
-            -1.0, -1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0,  1.0,
-            -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  1.0,
-            -1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0, -1.0,
-             1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  1.0,
-            -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0,  1.0,
-             1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0);
       begin
          GL.Gen_Vertex_Arrays (VAOs'Length, VAOs);
          GL.Bind_Vertex_Array (VAOs (1));
@@ -108,20 +111,21 @@ procedure Plain_Red_Cube is
 
       use type GL.Float32;
       use type GL.Clear_Buffer_Mask;
+      use type GL.SizeI;
       use type SDL.Dimension;
       use type Matrix4s.Matrix4;
       use type Vector4s.Vector4;
    begin
       --  GL.Clear_Colour (Red => 0.0, Green => 0.0, Blue => 0.0, Alpha => 1.0);
       --  GL.Clear (GL.Color_Buffer_Bit or GL.Depth_Buffer_Bit);
-      GL.Clear_Colour (Red => 1.0, Green => 1.0, Blue => 1.0, Alpha => 1.0);
-      GL.Clear (GL.Color_Buffer_Bit or GL.Depth_Buffer_Bit);
-      --  GL.Clear (GL.Depth_Buffer_Bit);
+      --  GL.Clear_Colour (Red => 1.0, Green => 1.0, Blue => 1.0, Alpha => 1.0);
+      --  GL.Clear (GL.Color_Buffer_Bit or GL.Depth_Buffer_Bit);
+      GL.Clear (GL.Depth_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
 
       --  Get the uniform variables for the MV and projection matrices.
-      V_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("v_matrix"));
-      M_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("m_matrix"));
+      --  V_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("v_matrix"));
+      --  M_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("m_matrix"));
       MV_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("mv_matrix"));
       P_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("p_matrix"));
 
@@ -147,22 +151,30 @@ procedure Plain_Red_Cube is
          Near          => 0.1,
          Far           => 1000.0);
 
-      View := Matrix4s.Translate (-Camera_X, -Camera_Y, Camera_Z);
+      View := Matrix4s.Translate (-Camera_X, -Camera_Y, -Camera_Z);
       --    (-Camera.Elements (Vector4s.X),
       --     -Camera.Elements (Vector4s.Y),
       --      Camera.Elements (Vector4s.Z));
+      --  IO.Put_Line ("View" & View'Image);
+      --  IO.New_Line;
 
       Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
       --    (Cube_Position.Elements (Vector4s.X),
       --     Cube_Position.Elements (Vector4s.Y),
       --     Cube_Position.Elements (Vector4s.Z));
 
-      --  Model_View := View * Model;
+      --  IO.Put_Line ("Model => " & Model'Image);
+      --  IO.New_Line;
+
+      Model_View := View * Model;
+
+      --  IO.Put_Line ("Model_View => " & Model_View'Image);
+      --  IO.New_Line;
 
       --  Copy perspective and MV matrices to corresponding uniform variables.
-      GL.Uniform_Matrix (V_Location, 1, GL.GL_False, Convert (View.Elements));
-      GL.Uniform_Matrix (M_Location, 1, GL.GL_False, Convert (Model.Elements));
-      --  GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
+      --  GL.Uniform_Matrix (V_Location, 1, GL.GL_False, Convert (View.Elements));
+      --  GL.Uniform_Matrix (M_Location, 1, GL.GL_False, Convert (Model.Elements));
+      GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
       GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
       --  Associate VBO with the corresponding vertex attribute in the vertex shader.
@@ -173,7 +185,7 @@ procedure Plain_Red_Cube is
       --  Adjust OpenGL settings and draw model.
       GL.Enable (GL.Depth_Test);
       GL.Depth_Func (GL.L_Equal);
-      GL.Draw_Arrays (GL.Triangles, 0, 3);
+      GL.Draw_Arrays (GL.Triangles, 0, Vertices'Length / 3);
    end Display;
 
    use type SDL.Events.Keyboards.Key_Codes;
