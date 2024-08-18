@@ -73,13 +73,14 @@ procedure Plain_Red_Cube is
 
    procedure Initialise (Window : Windows.Window) is
       procedure Set_Up_Vertices is
+         use type GL.SizeI;
       begin
          GL.Gen_Vertex_Arrays (VAOs'Length, VAOs);
          GL.Bind_Vertex_Array (VAOs (1));
          GL.Gen_Buffers (VBOs'Length, VBOs);
 
          GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
-         GL.Buffer_Data (GL.Array_Buffer, Vertices'Length, Vertices, GL.Static_Draw);
+         GL.Buffer_Data (GL.Array_Buffer, Vertices'Length * System.Storage_Unit, Vertices, GL.Static_Draw);
       end Set_Up_Vertices;
    begin
       GL.SDL.Initialise;  -- GL entry points.
@@ -187,6 +188,7 @@ procedure Plain_Red_Cube is
       GL.Enable (GL.Depth_Test);
       GL.Depth_Func (GL.L_Equal);
       GL.Draw_Arrays (GL.Triangles, 0, Vertices'Length / 3);
+      --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
 
    use type SDL.Events.Keyboards.Key_Codes;
