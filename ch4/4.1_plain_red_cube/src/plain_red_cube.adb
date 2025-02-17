@@ -117,41 +117,24 @@ procedure Plain_Red_Cube is
       use type Matrix4s.Matrix4;
       use type Vector4s.Vector4;
    begin
-      --  GL.Clear_Colour (Red => 0.0, Green => 0.0, Blue => 0.0, Alpha => 1.0);
-      --  GL.Clear (GL.Color_Buffer_Bit or GL.Depth_Buffer_Bit);
-      --  GL.Clear_Colour (Red => 1.0, Green => 1.0, Blue => 1.0, Alpha => 1.0);
-      --  GL.Clear (GL.Color_Buffer_Bit or GL.Depth_Buffer_Bit);
       GL.Clear (GL.Depth_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
 
       --  Get the uniform variables for the MV and projection matrices.
-      --  V_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("v_matrix"));
-      --  M_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("m_matrix"));
       MV_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("mv_matrix"));
       P_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("p_matrix"));
 
       --  Build perspective matrix.
-      --  Windows.Get_Size (Prog_Window)
-      --  Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
+      Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
 
-      --  declare
-      --     WS : Video.Surfaces.Surface := Windows.Get_Surface (Prog_Window);
-      --     S  : SDL.Sizes := Surfaces.Size (WS);
-      --  begin
-      --     loop
-      --        null;
-      --     end loop;
-      --  end;
-
-      --  Aspect := Float (Width) / Float (Height);
-      Aspect := Float (Window_Size.Width) / Float (Window_Size.Height);
-
+      Aspect      := Float (Width) / Float (Height);
       Perspective := Matrix4s.Perspective
         (Field_of_View => Maths.Utils.To_Radians (Angle_Degrees => 60.0),
          Aspect_Ratio  => Aspect,
          Near          => 0.1,
          Far           => 1000.0);
 
+      --  Build view matrix, model matrix, and model-view matrix.
       View := Matrix4s.Translate (-Camera_X, -Camera_Y, -Camera_Z);
       --    (-Camera.Elements (Vector4s.X),
       --     -Camera.Elements (Vector4s.Y),
@@ -173,8 +156,6 @@ procedure Plain_Red_Cube is
       --  IO.New_Line;
 
       --  Copy perspective and MV matrices to corresponding uniform variables.
-      --  GL.Uniform_Matrix (V_Location, 1, GL.GL_False, Convert (View.Elements));
-      --  GL.Uniform_Matrix (M_Location, 1, GL.GL_False, Convert (Model.Elements));
       GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
       GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
