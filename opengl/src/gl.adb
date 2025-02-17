@@ -26,4 +26,16 @@ package body GL is
          S.String_Lengths (1) := Int (Shader_Program'Length);
       end return;
    end Convert;
+
+
+   procedure Generate_Vertex_Arrays (Arrays : in out UInt_Array) is
+   begin
+      Gen_Vertex_Arrays (Arrays'Length, Arrays);
+   end Generate_Vertex_Arrays;
+
+
+   procedure Generate_Buffers (Buffers : in out UInt_Array) is
+   begin
+      Gen_Buffers (Buffers'Length, Buffers);
+   end Generate_Buffers;
 end GL;

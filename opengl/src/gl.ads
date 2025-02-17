@@ -137,6 +137,9 @@ package GL is
 
    Gen_Vertex_Arrays : Gen_Vertex_Arrays_Ptr := null;
 
+   procedure Generate_Vertex_Arrays (Arrays : in out UInt_Array) with
+     Inline;
+
    --  typedef void (APIENTRYP PFNGLBINDVERTEXARRAYPROC) (GLuint array);
    --  GLAPI void APIENTRY glBindVertexArray (GLuint array);
    type Bind_Vertex_Array_Ptr is access procedure (Arr : UInt) with
@@ -209,6 +212,9 @@ package GL is
      Convention => C;
 
    Gen_Buffers : Gen_Buffers_Ptr := null;
+
+   procedure Generate_Buffers (Buffers : in out UInt_Array) with
+     Inline;
 
    --    <enum value="0x88E0" name="GL_STREAM_DRAW" group="VertexBufferObjectUsage,BufferUsageARB"/>
    --    <enum value="0x88E1" name="GL_STREAM_READ" group="VertexBufferObjectUsage,BufferUsageARB"/>

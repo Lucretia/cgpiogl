@@ -75,9 +75,9 @@ procedure Plain_Red_Cube is
       procedure Set_Up_Vertices is
          use type GL.SizeI;
       begin
-         GL.Gen_Vertex_Arrays (VAOs'Length, VAOs);
+         GL.Generate_Vertex_Arrays (VAOs);
          GL.Bind_Vertex_Array (VAOs (1));
-         GL.Gen_Buffers (VBOs'Length, VBOs);
+         GL.Generate_Buffers (VBOs);
 
          GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
          GL.Buffer_Data (GL.Array_Buffer, Vertices'Length * System.Storage_Unit, Vertices, GL.Static_Draw);
