@@ -89,8 +89,8 @@ procedure Plain_Red_Cube is
       Camera_X               := 0.0;
       Camera_Y               := 0.0;
       Camera_Z               := 8.0;
-      Cube_Pos_X             := 0.0;
-      Cube_Pos_Y             := -2.0;
+      Cube_Pos_X             := 0.0;   --  cubeLocX/Y/Z in the book.
+      Cube_Pos_Y             := -2.0;  --  Shift Y down to reveal perspective.
       Cube_Pos_Z             := 0.0;
       --  Camera.Elements        := (Vector4s.Z => 8.0, others => 0.0);
       --  Cube_Position.Elements := (Vector4s.Y => -2.0, others => 0.0); --  Move down in Y to show perspective.
@@ -225,7 +225,7 @@ begin
             end case;
          end loop;
 
-         Display (Prog_Window, Timers.Ticks);
+         Display (Prog_Window, Timers.Ticks);  --  In the book, they use glfwGetTime() which returns seconds.
          Video.GL.Swap (Prog_Window);
 
          exit Main when Finished;
