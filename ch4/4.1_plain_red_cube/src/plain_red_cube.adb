@@ -111,7 +111,6 @@ procedure Plain_Red_Cube is
       Model,
       Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
 
-      use type GL.Float32;
       use type GL.Clear_Buffer_Mask;
       use type GL.SizeI;
       use type SDL.Dimension;
