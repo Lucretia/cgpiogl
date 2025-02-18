@@ -316,6 +316,11 @@ package GL is
 
    Draw_Arrays : Draw_Arrays_Ptr := null;
 
+   type Draw_Arrays_Instanced_Ptr is access procedure (Mode : Primitive_Modes; First : Int; Count, Instances : SizeI) with
+     Convention => C;
+
+   Draw_Arrays_Instanced : Draw_Arrays_Instanced_Ptr := null;
+
    --  typedef void (APIENTRYP PFNGLPOINTSIZEPROC) (GLfloat size);
    --  GLAPI void APIENTRY glPointSize (GLfloat size);
    type Point_Size_Ptr is access procedure (Size : Float32) with

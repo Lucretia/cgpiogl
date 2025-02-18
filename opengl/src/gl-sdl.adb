@@ -64,6 +64,10 @@ package body GL.SDL is
      (Subprogram_Name       => "glDrawArrays",
       Access_To_Sub_Program => Draw_Arrays_Ptr);
 
+   function Init_Draw_Arrays_Instanced is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glDrawArraysInstanced",
+      Access_To_Sub_Program => Draw_Arrays_Instanced_Ptr);
+
    function Init_Point_Size is new Video.GL.Get_Subprogram
      (Subprogram_Name       => "glPointSize",
       Access_To_Sub_Program => Point_Size_Ptr);
@@ -145,6 +149,7 @@ package body GL.SDL is
       Bind_Vertex_Array          := Init_Bind_Vertex_Array;
       Use_Program                := Init_Use_Program;
       Draw_Arrays                := Init_Draw_Arrays;
+      Draw_Arrays_Instanced      := Init_Draw_Arrays_Instanced;
       Point_Size                 := Init_Point_Size;
       Get_Error                  := Init_Get_Error;
       Enable                     := Init_Enable;
