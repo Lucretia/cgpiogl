@@ -88,7 +88,7 @@ procedure Instancing is
       Rendering_Program      := Utils.Create_Shader_Program ("src/vertex_shader.glsl", "src/fragment_shader.glsl");
       Camera_X               := 0.0;
       Camera_Y               := 0.0;
-      Camera_Z               := 28.0;
+      Camera_Z               := 420.0;
       --  Camera.Elements        := (Vector4s.Z => 8.0, others => 0.0);
       --  Cube_Position.Elements := (Vector4s.Y => -2.0, others => 0.0); --  Move down in Y to show perspective.
 
@@ -147,7 +147,7 @@ procedure Instancing is
       --  Adjust OpenGL settings and draw model.
       GL.Enable (GL.Depth_Test);
       GL.Depth_Func (GL.L_Equal);
-      GL.Draw_Arrays_Instanced (GL.Triangles, 0, Vertices'Length / 3, 24);
+      GL.Draw_Arrays_Instanced (GL.Triangles, 0, Vertices'Length / 3, 100_000);
 
       --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
