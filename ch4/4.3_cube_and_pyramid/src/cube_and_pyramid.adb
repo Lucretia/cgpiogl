@@ -43,9 +43,16 @@ procedure Cube_and_Pyramid is
 
    --  function Nanoseconds return RT.Time_Span is (RT.Nanoseconds (RT.Clock));
 
-   Camera_X,
-   Camera_Y,
-   Camera_Z          : Float;
+   Camera_X          : constant Float :=  0.0;
+   Camera_Y          : constant Float :=  0.0;
+   Camera_Z          : constant Float :=  8.0;
+   Cube_Pos_X        : constant Float :=  0.0;  --  cubeLocX/Y/Z in the book.
+   Cube_Pos_Y        : constant Float := -2.0;  --  Shift Y down to reveal perspective.
+   Cube_Pos_Z        : constant Float :=  0.0;
+   Pyramid_Pos_X     : constant Float :=  2.0;
+   Pyramid_Pos_Y     : constant Float :=  2.0;
+   Pyramid_Pos_Z     : constant Float :=  0.0;
+
    Rendering_Program : GL.UInt;
    Total_VAOs        : constant := 1;
    Total_VBOs        : constant := 2;
@@ -57,7 +64,7 @@ procedure Cube_and_Pyramid is
    use type GL.Float32;
 
    --  36 vertices, 12 triangles, makes 2x2x2 cube placed at origin.
-   Vertices : constant GL.Float32_Array (1 .. 108) :=
+   Cube_Vertices : constant GL.Float32_Array (1 .. 108) :=
       (-1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,
         1.0, -1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0,
         1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0, -1.0,
@@ -71,55 +78,66 @@ procedure Cube_and_Pyramid is
        -1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  1.0,  1.0,
         1.0,  1.0,  1.0, -1.0,  1.0,  1.0, -1.0,  1.0, -1.0);
 
+   --  Pyramid with 18 vertices, comprising 6 triangles (four sides, and two on the bottom).
+   Pyramid_Vertices : constant GL.Float32_Array (1 .. 54) :=
+      (-1.0, -1.0,  1.0,  1.0, -1.0,  1.0,  0.0,  1.0,  0.0,  --  front face
+        1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  0.0,  1.0,  0.0,  --  right face
+        1.0, -1.0, -1.0, -1.0, -1.0, -1.0,  0.0,  1.0,  0.0,  --  back face
+       -1.0, -1.0, -1.0, -1.0, -1.0,  1.0,  0.0,  1.0,  0.0,  --  left face
+       -1.0, -1.0, -1.0,  1.0, -1.0,  1.0, -1.0, -1.0,  1.0,  --  base – left front
+        1.0, -1.0,  1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0   --  base – right back
+      );
+
+   use type C.size_t;
+
    procedure Initialise (Window : Windows.Window) is
       procedure Set_Up_Vertices is
          use type GL.SizeI;
+
+         VBO_Index : C.size_t := VBOs'First;
       begin
          GL.Generate_Vertex_Arrays (VAOs);
          GL.Bind_Vertex_Array (VAOs (1));
          GL.Generate_Buffers (VBOs);
 
-         GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
-         GL.Buffer_Data (GL.Array_Buffer, Vertices'Length * System.Storage_Unit, Vertices, GL.Static_Draw);
+         GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBO_Index));
+         GL.Buffer_Data (GL.Array_Buffer, Cube_Vertices'Length * System.Storage_Unit, Cube_Vertices, GL.Static_Draw);
+
+         VBO_Index := @ + 1;
+
+         GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBO_Index));
+         GL.Buffer_Data (GL.Array_Buffer, Pyramid_Vertices'Length * System.Storage_Unit, Pyramid_Vertices, GL.Static_Draw);
       end Set_Up_Vertices;
    begin
       GL.SDL.Initialise;  -- GL entry points.
 
-      Rendering_Program      := Utils.Create_Shader_Program ("src/vertex_shader.glsl", "src/fragment_shader.glsl");
-      Camera_X               := 0.0;
-      Camera_Y               := 0.0;
-      Camera_Z               := 420.0;
-      --  Camera.Elements        := (Vector4s.Z => 8.0, others => 0.0);
-      --  Cube_Position.Elements := (Vector4s.Y => -2.0, others => 0.0); --  Move down in Y to show perspective.
+      Rendering_Program := Utils.Create_Shader_Program ("src/vertex_shader.glsl", "src/fragment_shader.glsl");
 
       Set_Up_Vertices;
    end Initialise;
 
 
    procedure Display (Window : Windows.Window; Current_Time_MS : Timers.Milliseconds_Long) is
-      V_Location,
-      P_Location,
-      TF_Location    : GL.Int;
+      MV_Location,
+      P_Location     : GL.Int;
       Width, Height  : SDL.Natural_Dimension;
       Aspect         : Float;
       Perspective,
       View,
-      Model          : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
-      Time_Factor    : constant GL.Float32 := GL.Float32 (Current_Time_MS);
+      Model,
+      Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
 
       use type GL.Clear_Buffer_Mask;
       use type GL.SizeI;
       use type SDL.Dimension;
-      --  use type Matrix4s.Matrix4;
-      --  use type Vector4s.Vector4;
+      use type Matrix4s.Matrix4;
    begin
       GL.Clear (GL.Depth_Buffer_Bit or GL.Color_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
 
       --  Get the uniform variables for the MV and projection matrices.
-      V_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("v_matrix"));
+      MV_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("mv_matrix"));
       P_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("p_matrix"));
-      TF_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("tf"));
 
       --  Build perspective matrix.
       Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
@@ -134,9 +152,12 @@ procedure Cube_and_Pyramid is
       --  Build view matrix, model matrix, and model-view matrix.
       View := Matrix4s.Translate (-Camera_X, -Camera_Y, -Camera_Z);
 
+      --  Draw the cube (use buffer #0).
+      Model      := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
+      Model_View := View * Model;
+
       --  Copy perspective and MV matrices to corresponding uniform variables.
-      GL.Uniform (TF_Location, Time_Factor);
-      GL.Uniform_Matrix (V_Location, 1, GL.GL_False, Convert (View.Elements));
+      GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
       GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
       --  Associate VBO with the corresponding vertex attribute in the vertex shader.
@@ -147,7 +168,25 @@ procedure Cube_and_Pyramid is
       --  Adjust OpenGL settings and draw model.
       GL.Enable (GL.Depth_Test);
       GL.Depth_Func (GL.L_Equal);
-      GL.Draw_Arrays_Instanced (GL.Triangles, 0, Vertices'Length / 3, 100_000);
+      GL.Draw_Arrays (GL.Triangles, 0, Cube_Vertices'Length / 3);
+
+      --  Draw the pyramid (use buffer #1).
+      Model      := Matrix4s.Translate (Pyramid_Pos_X, Pyramid_Pos_Y, Pyramid_Pos_Z);
+      Model_View := View * Model;
+
+      --  Copy perspective and MV matrices to corresponding uniform variables.
+      GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
+      GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
+
+      --  Associate VBO with the corresponding vertex attribute in the vertex shader.
+      GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First + 1));
+      GL.Vertex_Attrib_Pointer (0, 3, GL.GL_Float, GL.GL_False, 0, System.Null_Address);
+      GL.Enable_Vertex_Attrib_Array (0);
+
+      --  Adjust OpenGL settings and draw model.
+      GL.Enable (GL.Depth_Test);
+      GL.Depth_Func (GL.L_Equal);
+      GL.Draw_Arrays (GL.Triangles, 0, Pyramid_Vertices'Length / 3);
 
       --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
