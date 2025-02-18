@@ -1,6 +1,6 @@
-with Ada.Numerics.Generic_Elementary_Functions;
+--  with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
-with Ada.Text_IO;
+--  with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
 with Interfaces.C;
 --  with Ada.Real_Time;
@@ -21,7 +21,7 @@ with Utils;
 procedure Instancing is
    --  package RT renames Ada.Real_Time;
    package Encoders renames Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
-   package IO renames Ada.Text_IO;
+   --  package IO renames Ada.Text_IO;
    package C renames Interfaces.C;
    package Timers renames SDL.Timers;
    package Video renames SDL.Video;
@@ -46,16 +46,13 @@ procedure Instancing is
    Camera_X,
    Camera_Y,
    Camera_Z          : Float;
-   Cube_Pos_X,
-   Cube_Pos_Y,
-   Cube_Pos_Z        : Float;
    Rendering_Program : GL.UInt;
    Total_VAOs        : constant := 1;
    Total_VBOs        : constant := 2;
    VAOs              : GL.UInt_Array (1 .. Total_VAOs);
    VBOs              : GL.UInt_Array (1 .. Total_VBOs);
 
-   package Trig is new Ada.Numerics.Generic_Elementary_Functions (Float);
+   --  package Trig is new Ada.Numerics.Generic_Elementary_Functions (Float);
 
    use type GL.Float32;
 
@@ -92,9 +89,6 @@ procedure Instancing is
       Camera_X               := 0.0;
       Camera_Y               := 0.0;
       Camera_Z               := 28.0;
-      Cube_Pos_X             := 0.0;   --  cubeLocX/Y/Z in the book.
-      Cube_Pos_Y             := -2.0;  --  Shift Y down to reveal perspective.
-      Cube_Pos_Z             := 0.0;
       --  Camera.Elements        := (Vector4s.Z => 8.0, others => 0.0);
       --  Cube_Position.Elements := (Vector4s.Y => -2.0, others => 0.0); --  Move down in Y to show perspective.
 
@@ -104,30 +98,28 @@ procedure Instancing is
 
    procedure Display (Window : Windows.Window; Current_Time_MS : Timers.Milliseconds_Long) is
       V_Location,
-      M_Location,
-      MV_Location,
-      P_Location     : GL.Int;
+      P_Location,
+      TF_Location    : GL.Int;
       Width, Height  : SDL.Natural_Dimension;
       Aspect         : Float;
       Perspective,
       View,
-      Translation,
-      Rotation,
-      Model,
-      Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
+      Model          : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
+      Time_Factor    : constant GL.Float32 := GL.Float32 (Current_Time_MS);
 
       use type GL.Clear_Buffer_Mask;
       use type GL.SizeI;
       use type SDL.Dimension;
-      use type Matrix4s.Matrix4;
-      use type Vector4s.Vector4;
+      --  use type Matrix4s.Matrix4;
+      --  use type Vector4s.Vector4;
    begin
       GL.Clear (GL.Depth_Buffer_Bit or GL.Color_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
 
       --  Get the uniform variables for the MV and projection matrices.
-      MV_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("mv_matrix"));
+      V_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("v_matrix"));
       P_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("p_matrix"));
+      TF_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("tf"));
 
       --  Build perspective matrix.
       Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
@@ -141,67 +133,21 @@ procedure Instancing is
 
       --  Build view matrix, model matrix, and model-view matrix.
       View := Matrix4s.Translate (-Camera_X, -Camera_Y, -Camera_Z);
-      --    (-Camera.Elements (Vector4s.X),
-      --     -Camera.Elements (Vector4s.Y),
-      --      Camera.Elements (Vector4s.Z));
-      --  IO.Put_Line ("View" & View'Image);
-      --  IO.New_Line;
 
-      for Time_Factor in 1 .. 24 loop
-         --  Use current time to compute different translations in x, y, and z
-         --  tMat = glm::translate(glm::mat4(1.0f),
-         --     glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
-         Translation := Matrix4s.Identity * Matrix4s.Translate (
-           X => Trig.Sin (0.35 * Float (Time_Factor)) * 8.0,
-           Y => Trig.Cos (0.52 * Float (Time_Factor)) * 8.0,
-           Z => Trig.Sin (0.70 * Float (Time_Factor)) * 8.0);
+      --  Copy perspective and MV matrices to corresponding uniform variables.
+      GL.Uniform (TF_Location, Time_Factor);
+      GL.Uniform_Matrix (V_Location, 1, GL.GL_False, Convert (View.Elements));
+      GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
-         --  rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
-         --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
-         --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
-         declare
-            Speed : constant Float := 1.75;
-            Angle : constant Float := Speed * Float (Current_Time_MS) * Float (Time_Factor);
-         begin
-            Rotation := Matrix4s.Identity *
-                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 1.0, 0.0, 1.0)) *
-                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (1.0, 0.0, 0.0, 1.0)) *
-                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 0.0, 1.0, 1.0));
-                        --  Matrix4s.Rotate_Around_Y (Angle) *
-                        --  Matrix4s.Rotate_Around_X (Angle) *
-                        --  Matrix4s.Rotate_Around_Z (Angle);
-         end;
-         --  The 1.75 adjusts the rotation speed
-         --    Does it??
-         Model := Translation * Rotation;
+      --  Associate VBO with the corresponding vertex attribute in the vertex shader.
+      GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
+      GL.Vertex_Attrib_Pointer (0, 3, GL.GL_Float, GL.GL_False, 0, System.Null_Address);
+      GL.Enable_Vertex_Attrib_Array (0);
 
-         --  Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
-         --    (Cube_Position.Elements (Vector4s.X),
-         --     Cube_Position.Elements (Vector4s.Y),
-         --     Cube_Position.Elements (Vector4s.Z));
-
-         --  IO.Put_Line ("Model => " & Model'Image);
-         --  IO.New_Line;
-
-         Model_View := View * Model;
-
-         --  IO.Put_Line ("Model_View => " & Model_View'Image);
-         --  IO.New_Line;
-
-         --  Copy perspective and MV matrices to corresponding uniform variables.
-         GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
-         GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
-
-         --  Associate VBO with the corresponding vertex attribute in the vertex shader.
-         GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
-         GL.Vertex_Attrib_Pointer (0, 3, GL.GL_Float, GL.GL_False, 0, System.Null_Address);
-         GL.Enable_Vertex_Attrib_Array (0);
-
-         --  Adjust OpenGL settings and draw model.
-         GL.Enable (GL.Depth_Test);
-         GL.Depth_Func (GL.L_Equal);
-         GL.Draw_Arrays (GL.Triangles, 0, Vertices'Length / 3);
-      end loop;
+      --  Adjust OpenGL settings and draw model.
+      GL.Enable (GL.Depth_Test);
+      GL.Depth_Func (GL.L_Equal);
+      GL.Draw_Arrays_Instanced (GL.Triangles, 0, Vertices'Length / 3, 24);
 
       --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
