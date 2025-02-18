@@ -57,7 +57,7 @@ procedure Cube_and_Pyramid is
    use type GL.Float32;
 
    --  36 vertices, 12 triangles, makes 2x2x2 cube placed at origin.
-   Vertices : GL.Float32_Array (1 .. 108) :=
+   Vertices : constant GL.Float32_Array (1 .. 108) :=
       (-1.0,  1.0, -1.0, -1.0, -1.0, -1.0,  1.0, -1.0, -1.0,
         1.0, -1.0, -1.0,  1.0,  1.0, -1.0, -1.0,  1.0, -1.0,
         1.0, -1.0, -1.0,  1.0, -1.0,  1.0,  1.0,  1.0, -1.0,
