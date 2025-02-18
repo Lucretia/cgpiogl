@@ -1,3 +1,4 @@
+with Ada.Numerics.Generic_Elementary_Functions;
 with Ada.Strings.UTF_Encoding.Wide_Wide_Strings;
 with Ada.Text_IO;
 with Ada.Unchecked_Conversion;
@@ -54,6 +55,8 @@ procedure Plain_Red_Cube is
    VAOs              : GL.UInt_Array (1 .. Total_VAOs);
    VBOs              : GL.UInt_Array (1 .. Total_VBOs);
 
+   package Trig is new Ada.Numerics.Generic_Elementary_Functions (Float);
+
    use type GL.Float32;
 
    --  36 vertices, 12 triangles, makes 2x2x2 cube placed at origin.
@@ -108,6 +111,8 @@ procedure Plain_Red_Cube is
       Aspect         : Float;
       Perspective,
       View,
+      Translation,
+      Rotation,
       Model,
       Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
 
@@ -117,7 +122,7 @@ procedure Plain_Red_Cube is
       use type Matrix4s.Matrix4;
       use type Vector4s.Vector4;
    begin
-      GL.Clear (GL.Depth_Buffer_Bit);
+      GL.Clear (GL.Depth_Buffer_Bit or GL.Color_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
 
       --  Get the uniform variables for the MV and projection matrices.
@@ -142,7 +147,34 @@ procedure Plain_Red_Cube is
       --  IO.Put_Line ("View" & View'Image);
       --  IO.New_Line;
 
-      Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
+      --  Use current time to compute different translations in x, y, and z
+      --  tMat = glm::translate(glm::mat4(1.0f),
+      --     glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
+      Translation := Matrix4s.Identity * Matrix4s.Translate (
+        X => Trig.Sin (0.35 * Float (Current_Time_MS)) * 2.0,
+        Y => Trig.Cos (0.52 * Float (Current_Time_MS)) * 2.0,
+        Z => Trig.Sin (0.70 * Float (Current_Time_MS)) * 2.0);
+
+      --  rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+      --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
+      --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
+      declare
+         Speed : constant Float := 1.75;
+         Angle : constant Float := Speed * Float (Current_Time_MS);
+      begin
+         Rotation := Matrix4s.Identity *
+                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 1.0, 0.0, 1.0)) *
+                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (1.0, 0.0, 0.0, 1.0)) *
+                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 0.0, 1.0, 1.0));
+                     --  Matrix4s.Rotate_Around_Y (Angle) *
+                     --  Matrix4s.Rotate_Around_X (Angle) *
+                     --  Matrix4s.Rotate_Around_Z (Angle);
+      end;
+      --  The 1.75 adjusts the rotation speed
+      --    Does it??
+      Model := Translation * Rotation;
+
+      --  Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
       --    (Cube_Position.Elements (Vector4s.X),
       --     Cube_Position.Elements (Vector4s.Y),
       --     Cube_Position.Elements (Vector4s.Z));
