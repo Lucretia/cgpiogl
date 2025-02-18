@@ -91,7 +91,7 @@ procedure Plain_Red_Cube is
       Rendering_Program      := Utils.Create_Shader_Program ("src/vertex_shader.glsl", "src/fragment_shader.glsl");
       Camera_X               := 0.0;
       Camera_Y               := 0.0;
-      Camera_Z               := 8.0;
+      Camera_Z               := 28.0;
       Cube_Pos_X             := 0.0;   --  cubeLocX/Y/Z in the book.
       Cube_Pos_Y             := -2.0;  --  Shift Y down to reveal perspective.
       Cube_Pos_Z             := 0.0;
@@ -147,59 +147,62 @@ procedure Plain_Red_Cube is
       --  IO.Put_Line ("View" & View'Image);
       --  IO.New_Line;
 
-      --  Use current time to compute different translations in x, y, and z
-      --  tMat = glm::translate(glm::mat4(1.0f),
-      --     glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
-      Translation := Matrix4s.Identity * Matrix4s.Translate (
-        X => Trig.Sin (0.35 * Float (Current_Time_MS)) * 2.0,
-        Y => Trig.Cos (0.52 * Float (Current_Time_MS)) * 2.0,
-        Z => Trig.Sin (0.70 * Float (Current_Time_MS)) * 2.0);
+      for Time_Factor in 1 .. 24 loop
+         --  Use current time to compute different translations in x, y, and z
+         --  tMat = glm::translate(glm::mat4(1.0f),
+         --     glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
+         Translation := Matrix4s.Identity * Matrix4s.Translate (
+           X => Trig.Sin (0.35 * Float (Time_Factor)) * 8.0,
+           Y => Trig.Cos (0.52 * Float (Time_Factor)) * 8.0,
+           Z => Trig.Sin (0.70 * Float (Time_Factor)) * 8.0);
 
-      --  rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
-      --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
-      --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
-      declare
-         Speed : constant Float := 1.75;
-         Angle : constant Float := Speed * Float (Current_Time_MS);
-      begin
-         Rotation := Matrix4s.Identity *
-                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 1.0, 0.0, 1.0)) *
-                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (1.0, 0.0, 0.0, 1.0)) *
-                     Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 0.0, 1.0, 1.0));
-                     --  Matrix4s.Rotate_Around_Y (Angle) *
-                     --  Matrix4s.Rotate_Around_X (Angle) *
-                     --  Matrix4s.Rotate_Around_Z (Angle);
-      end;
-      --  The 1.75 adjusts the rotation speed
-      --    Does it??
-      Model := Translation * Rotation;
+         --  rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
+         --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
+         --  rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
+         declare
+            Speed : constant Float := 1.75;
+            Angle : constant Float := Speed * Float (Current_Time_MS) * Float (Time_Factor);
+         begin
+            Rotation := Matrix4s.Identity *
+                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 1.0, 0.0, 1.0)) *
+                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (1.0, 0.0, 0.0, 1.0)) *
+                        Matrix4s.Rotate (Angle, Vector4s.To_Vector (0.0, 0.0, 1.0, 1.0));
+                        --  Matrix4s.Rotate_Around_Y (Angle) *
+                        --  Matrix4s.Rotate_Around_X (Angle) *
+                        --  Matrix4s.Rotate_Around_Z (Angle);
+         end;
+         --  The 1.75 adjusts the rotation speed
+         --    Does it??
+         Model := Translation * Rotation;
 
-      --  Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
-      --    (Cube_Position.Elements (Vector4s.X),
-      --     Cube_Position.Elements (Vector4s.Y),
-      --     Cube_Position.Elements (Vector4s.Z));
+         --  Model := Matrix4s.Translate (Cube_Pos_X, Cube_Pos_Y, Cube_Pos_Z);
+         --    (Cube_Position.Elements (Vector4s.X),
+         --     Cube_Position.Elements (Vector4s.Y),
+         --     Cube_Position.Elements (Vector4s.Z));
 
-      --  IO.Put_Line ("Model => " & Model'Image);
-      --  IO.New_Line;
+         --  IO.Put_Line ("Model => " & Model'Image);
+         --  IO.New_Line;
 
-      Model_View := View * Model;
+         Model_View := View * Model;
 
-      --  IO.Put_Line ("Model_View => " & Model_View'Image);
-      --  IO.New_Line;
+         --  IO.Put_Line ("Model_View => " & Model_View'Image);
+         --  IO.New_Line;
 
-      --  Copy perspective and MV matrices to corresponding uniform variables.
-      GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
-      GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
+         --  Copy perspective and MV matrices to corresponding uniform variables.
+         GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View.Elements));
+         GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
-      --  Associate VBO with the corresponding vertex attribute in the vertex shader.
-      GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
-      GL.Vertex_Attrib_Pointer (0, 3, GL.GL_Float, GL.GL_False, 0, System.Null_Address);
-      GL.Enable_Vertex_Attrib_Array (0);
+         --  Associate VBO with the corresponding vertex attribute in the vertex shader.
+         GL.Bind_Buffer (GL.Array_Buffer, VBOs (VBOs'First));
+         GL.Vertex_Attrib_Pointer (0, 3, GL.GL_Float, GL.GL_False, 0, System.Null_Address);
+         GL.Enable_Vertex_Attrib_Array (0);
 
-      --  Adjust OpenGL settings and draw model.
-      GL.Enable (GL.Depth_Test);
-      GL.Depth_Func (GL.L_Equal);
-      GL.Draw_Arrays (GL.Triangles, 0, Vertices'Length / 3);
+         --  Adjust OpenGL settings and draw model.
+         GL.Enable (GL.Depth_Test);
+         GL.Depth_Func (GL.L_Equal);
+         GL.Draw_Arrays (GL.Triangles, 0, Vertices'Length / 3);
+      end loop;
+
       --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
 
