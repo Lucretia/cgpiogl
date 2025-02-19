@@ -148,6 +148,7 @@ procedure Simple_Solar_System is
    begin
       GL.Clear (GL.Depth_Buffer_Bit or GL.Color_Buffer_Bit);
       GL.Use_Program (Rendering_Program);
+      GL.Enable (GL.Cap_Cull_Face);
 
       --  Get the uniform variables for the MV and projection matrices.
       MV_Location := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("mv_matrix"));
@@ -184,6 +185,7 @@ procedure Simple_Solar_System is
       --  Adjust OpenGL settings and draw model.
       GL.Enable (GL.Depth_Test);
       GL.Depth_Func (GL.L_Equal);
+      GL.Front_Face (GL.CCW);
       GL.Draw_Arrays (GL.Triangles, 0, Pyramid_Vertices'Length / 3);
 
       Model_View_Stack.Pop;
@@ -210,6 +212,7 @@ procedure Simple_Solar_System is
       --  Adjust OpenGL settings and draw model.
       --  GL.Enable (GL.Depth_Test);
       --  GL.Depth_Func (GL.L_Equal);
+      GL.Front_Face (GL.CW);
       GL.Draw_Arrays (GL.Triangles, 0, Cube_Vertices'Length / 3);
 
       Model_View_Stack.Pop;
@@ -235,6 +238,7 @@ procedure Simple_Solar_System is
       GL.Enable_Vertex_Attrib_Array (0);
 
       --  Adjust OpenGL settings and draw model.
+      GL.Front_Face (GL.CW);
       GL.Draw_Arrays (GL.Triangles, 0, Cube_Vertices'Length / 3);
 
       --  Remove moon scale/rotation/position, planet position, sun position, and view matrices from stack.
