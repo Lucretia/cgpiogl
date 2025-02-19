@@ -25,6 +25,6 @@
 		}
 	],
 	"settings": {
-		"ada.projectFile": "./plain_red_cube.gpr"
+		"ada.projectFile": "./simple_solar_system.gpr"
 	}
 }
