@@ -128,6 +128,10 @@ package body GL.SDL is
      (Subprogram_Name       => "glDepthFunc",
       Access_To_Sub_Program => Depth_Func_Ptr);
 
+   function Init_Viewport is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glViewport",
+      Access_To_Sub_Program => Viewport_Ptr);
+
    --  function Init_ is new Video.GL.Get_Subprogram
    --    (Subprogram_Name       => "",
    --     Access_To_Sub_Program => );
@@ -165,5 +169,6 @@ package body GL.SDL is
       Vertex_Attrib_Pointer      := Init_Vertex_Attrib_Pointer;
       Enable_Vertex_Attrib_Array := Init_Enable_Vertex_Attrib_Array;
       Depth_Func                 := Init_Depth_Func;
+      Viewport                   := Init_Viewport;
    end Initialise;
 end GL.SDL;

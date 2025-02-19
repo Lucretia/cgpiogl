@@ -774,4 +774,9 @@ package GL is
      Convention => C;
 
    Depth_Func : Depth_Func_Ptr := null;
+
+   type Viewport_Ptr is access procedure (X, Y : Int; Width, Height : SizeI) with
+     Convention => C;
+
+   Viewport : Viewport_Ptr := null;
 end GL;
