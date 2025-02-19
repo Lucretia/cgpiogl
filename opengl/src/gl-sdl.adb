@@ -93,7 +93,7 @@ package body GL.SDL is
       Access_To_Sub_Program => Front_Face_Ptr);
 
    function Init_Polygon_Mode is new Video.GL.Get_Subprogram
-     (Subprogram_Name       => "Polygon_Mode",
+     (Subprogram_Name       => "glPolygonMode",
       Access_To_Sub_Program => Polygon_Mode_Ptr);
 
    function Init_Get_Shader is new Video.GL.Get_Subprogram
