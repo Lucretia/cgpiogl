@@ -172,10 +172,10 @@ procedure Simple_Solar_System is
       ------------------------------------------------------------------------------------------------------------------
       Model_View_Stack.Push_Top;
       --  Model_View_Stack.Top := @ * Matrix4s.Translate (0.0, 0.0, 0.0);
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Translate (0.0, 0.0, 0.0);
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Translate (0.0, 0.0, 0.0);
       Model_View_Stack.Push_Top;
       --  Model_View_Stack.Top := @ * Matrix4s.Rotate_Around_X (Float (Current_Time_MS));
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Rotate_Around_X (Float (Speed));
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Rotate_Around_X (Float (Speed));
 
       --  Copy perspective and MV matrices to corresponding uniform variables.
       GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View_Stack.Top.Elements));
@@ -196,12 +196,12 @@ procedure Simple_Solar_System is
       --  Cube = planet.
       ------------------------------------------------------------------------------------------------------------------
       Model_View_Stack.Push_Top;
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Translate
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Translate
         (X => Trig.Sin (Speed) * 4.0,
          Y => 0.0,
          Z => Trig.Cos (Speed) * 4.0);
       Model_View_Stack.Push_Top;
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Rotate_Around_Y (Speed);
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Rotate_Around_Y (Speed);
 
       --  Copy perspective and MV matrices to corresponding uniform variables.
       GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View_Stack.Top.Elements));
@@ -222,13 +222,13 @@ procedure Simple_Solar_System is
       --  Smaller cube = moon.
       ------------------------------------------------------------------------------------------------------------------
       Model_View_Stack.Push_Top;
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Translate
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Translate
         (X => 0.0,
          Y => Trig.Sin (Speed) * 2.0,
          Z => Trig.Cos (Speed) * 2.0);
       --  Model_View_Stack.Push_Top;
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Rotate_Around_Z (Speed);
-      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Identity * Matrix4s.Scale (0.25);
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Rotate_Around_Z (Speed);
+      Model_View_Stack.Top := Model_View_Stack.Top * Matrix4s.Scale (0.25);
 
       --  Copy perspective and MV matrices to corresponding uniform variables.
       GL.Uniform_Matrix (MV_Location, 1, GL.GL_False, Convert (Model_View_Stack.Top.Elements));
