@@ -8,9 +8,13 @@ with Maths.Matrix4s;
 with Maths.Matrix4s.Stacks;
 with Maths.Utils;
 with Maths.Vector4s;
+with SDL;
+with SDL.Events;
 with SDL.Events.Events;
 with SDL.Events.Keyboards;
+with SDL.Events.Windows;
 with SDL.Timers;
+with SDL.Video;
 with SDL.Video.GL;
 with SDL.Video.Surfaces;
 with SDL.Video.Renderers;
@@ -124,23 +128,22 @@ procedure Simple_Solar_System is
       Set_Up_Vertices;
    end Initialise;
 
+   Perspective,
+   View,
+   Model,
+   Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
 
    procedure Display (Window : Windows.Window; Current_Time_MS : Timers.Milliseconds_Long) is
       MV_Location,
       P_Location     : GL.Int;
-      Width, Height  : SDL.Natural_Dimension;
-      Aspect         : Float;
-      Perspective,
-      View,
-      Model,
-      Model_View     : Maths.Matrix4s.Matrix4 (Maths.Matrix4s.Components);
-      Speed          : Float := Float (Current_Time_MS) / 1000.0;
+      --  Width, Height  : SDL.Natural_Dimension;
+      Speed          : constant Float := Float (Current_Time_MS) / 1000.0;
 
       package Trig renames Maths.Utils.Trig;
 
       use type GL.Clear_Buffer_Mask;
       use type GL.SizeI;
-      use type SDL.Dimension;
+      --  use type SDL.Dimension;
       use type Matrix4s.Matrix4;
    begin
       GL.Clear (GL.Depth_Buffer_Bit or GL.Color_Buffer_Bit);
@@ -151,14 +154,7 @@ procedure Simple_Solar_System is
       P_Location  := GL.Get_Uniform_Location (Rendering_Program, C.To_C ("p_matrix"));
 
       --  Build perspective matrix.
-      Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
-
-      Aspect      := Float (Width) / Float (Height);
-      Perspective := Matrix4s.Perspective
-        (Field_of_View => Maths.Utils.To_Radians (Angle_Degrees => 60.0),
-         Aspect_Ratio  => Aspect,
-         Near          => 0.1,
-         Far           => 1000.0);
+      --  Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
 
       GL.Uniform_Matrix (P_Location, 1, GL.GL_False, Convert (Perspective.Elements));
 
@@ -250,7 +246,28 @@ procedure Simple_Solar_System is
       --  IO.Put_Line ("Vertices'Length: " & Vertices'Length'Image); --  & "    Vertices'Length / 3: " & (Vertices'Length / 3)'Image');
    end Display;
 
+
+   procedure Window_Resize (Window_Id : Video.Windows.ID; New_Size : SDL.Positive_Sizes) is
+      Aspect : constant Float := Float (New_Size.Width) / Float (New_Size.Height);
+      --  Aspect : Float;
+      --  Width, Height  : SDL.Natural_Dimension;
+   begin
+      --  Video.GL.Get_Drawable_Size (Prog_Window, Width, Height);
+      --  Aspect := Float (Width) / Float (Height);
+
+      GL.Viewport (0, 0, GL.SizeI (New_Size.Width), GL.SizeI (New_Size.Height));
+
+      Perspective := Matrix4s.Perspective
+        (Field_of_View => Maths.Utils.To_Radians (Angle_Degrees => 60.0),
+         Aspect_Ratio  => Aspect,
+         Near          => 0.1,
+         Far           => 1000.0);
+   end Window_Resize;
+
+
    use type SDL.Events.Keyboards.Key_Codes;
+   use type SDL.Events.Windows.Window_Event_ID;
+   use type Windows.Window_Flags;
 begin
    if SDL.Initialise then
       Video.GL.Set_Context_Profile (Video.GL.Core);
@@ -260,13 +277,17 @@ begin
         (Win      => Prog_Window,
          Title    => Encoders.Encode ("Chapter 4: Simple Solar System"),
          Position => Windows.Centered_Window_Position,
-         Size     => Window_Size);
+         Size     => Window_Size,
+         Flags    => Windows.OpenGL or Windows.Resizable);
 
       Video.GL.Create (Context, From => Prog_Window);
       Video.GL.Set_Current (Context, Prog_Window);
       Video.GL.Set_Swap_Interval (Video.GL.Synchronised);
 
       Initialise (Prog_Window);
+
+      --  Display the contents, without this, the window is black.
+      Window_Resize (Event.Window.ID, Window_Size);
 
       Main : loop
          --  This is basically the "glfwWindowShouldClose" call.
@@ -278,6 +299,13 @@ begin
                when SDL.Events.Keyboards.Key_Up =>
                   if Event.Keyboard.Key_Sym.Key_Code = SDL.Events.Keyboards.Code_Escape then
                      Finished := True;
+                  end if;
+
+               when SDL.Events.Windows.Window =>
+                  if Event.Window.Event_ID = SDL.Events.Windows.Resized then
+                     Window_Resize (Event.Window.ID,
+                                    (Width  => SDL.Dimension (Event.Window.Data_1),
+                                     Height => SDL.Dimension (Event.Window.Data_2)));
                   end if;
 
                when others =>
