@@ -404,7 +404,7 @@ package GL is
    type Capabilities is
      (Line_Smooth,
       Polygon_Smooth,
-      Cull_Face,
+      Cap_Cull_Face,
       Depth_Test,
       Stencil_Test,
       Dither,
@@ -442,7 +442,7 @@ package GL is
    for Capabilities use
      (Line_Smooth                   => 16#0B20#,
       Polygon_Smooth                => 16#0B41#,
-      Cull_Face                     => 16#0B44#,
+      Cap_Cull_Face                 => 16#0B44#,
       Depth_Test                    => 16#0B71#,
       Stencil_Test                  => 16#0B90#,
       Dither                        => 16#0BD0#,
@@ -500,6 +500,22 @@ package GL is
    for Triangle_Faces use (Front          => 16#0404#,
                            Back           => 16#0405#,
                            Front_And_Back => 16#0408#);
+
+   type Cull_Face_Ptr is access procedure (Mode : Triangle_Faces) with
+     Convention => C;
+
+   Cull_Face : Cull_Face_Ptr := null;
+
+   type Front_Face_Direction is (CW, CCW) with
+     Convention => C;
+
+   for Front_Face_Direction use (CW => 16#0900#, CCW => 16#0901#);
+
+   type Front_Face_Ptr is access procedure (Mode : Front_Face_Direction) with
+     Convention => C;
+
+   Front_Face : Front_Face_Ptr := null;
+
 
    --  #define GL_POINT                          0x1B00
    --  #define GL_LINE                           0x1B01

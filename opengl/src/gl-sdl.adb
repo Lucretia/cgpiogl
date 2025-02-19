@@ -84,6 +84,14 @@ package body GL.SDL is
      (Subprogram_Name       => "glDisable",
       Access_To_Sub_Program => Disable_Ptr);
 
+   function Init_Cull_Face is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glCullFace",
+      Access_To_Sub_Program => Cull_Face_Ptr);
+
+   function Init_Front_Face is new Video.GL.Get_Subprogram
+     (Subprogram_Name       => "glFrontFace",
+      Access_To_Sub_Program => Front_Face_Ptr);
+
    function Init_Polygon_Mode is new Video.GL.Get_Subprogram
      (Subprogram_Name       => "Polygon_Mode",
       Access_To_Sub_Program => Polygon_Mode_Ptr);
@@ -158,6 +166,8 @@ package body GL.SDL is
       Get_Error                  := Init_Get_Error;
       Enable                     := Init_Enable;
       Disable                    := Init_Disable;
+      Cull_Face                  := Init_Cull_Face;
+      Front_Face                 := Init_Front_Face;
       Polygon_Mode               := Init_Polygon_Mode;
       Get_Shader                 := Init_Get_Shader;
       Get_Program                := Init_Get_Program;
